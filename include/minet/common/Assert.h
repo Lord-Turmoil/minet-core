@@ -2,6 +2,8 @@
 
 #include <filesystem>
 
+#include "minet/common/Base.h"
+
 #ifdef MINET_ENABLE_ASSERT
 #define MINET_DEBUG_BREAK() __debugbreak()
 #else

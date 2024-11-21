@@ -34,4 +34,9 @@ template <typename T, typename... Args> constexpr Ref<T> CreateRef(Args&&... arg
     return std::make_shared<T>(std::forward<Args>(args)...);
 }
 
+template <typename T> constexpr Ref<T> CreateRef(T* ptr)
+{
+    return std::shared_ptr<T>(ptr);
+}
+
 MINET_END
