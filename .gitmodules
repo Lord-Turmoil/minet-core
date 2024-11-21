@@ -1,0 +1,9 @@
+[submodule "libs/spdlog"]
+	path = libs/spdlog
+	url = https://github.com/gabime/spdlog.git
+[submodule "libs/mioc"]
+	path = libs/mioc
+	url = https://github.com/Lord-Turmoil/MinIoC.git
+[submodule "libs/json"]
+	path = libs/json
+	url = https://github.com/nlohmann/json
