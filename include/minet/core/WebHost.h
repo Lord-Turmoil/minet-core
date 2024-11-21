@@ -1,7 +1,6 @@
 #pragma once
 
 #include <mioc/mioc.h>
-#include <string>
 #include "minet/common/Base.h"
 
 MINET_BEGIN

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <unordered_map>
+#include "minet/common/Log.h"
 #include "minet/core/ILoggerFactory.h"
 
 MINET_BEGIN

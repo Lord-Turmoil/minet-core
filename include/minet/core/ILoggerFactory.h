@@ -1,8 +1,10 @@
 #pragma once
 
-#include "minet/components/Logger.h"
+#include "minet/common/Base.h"
 
 MINET_BEGIN
+
+class Logger;
 
 /**
  * @brief Logger factory interface.

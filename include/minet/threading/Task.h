@@ -1,3 +1,5 @@
+#pragma once
+
 #include "minet/common/Base.h"
 #include "minet/threading/Thread.h"
 

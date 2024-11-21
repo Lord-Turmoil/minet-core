@@ -1,4 +1,5 @@
 #include "minet/components/LoggerFactory.h"
+#include "minet/components/Logger.h"
 
 MINET_BEGIN
 
