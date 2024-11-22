@@ -8,8 +8,8 @@
 #define MINET_END }
 #define MINET     ::minet::
 
-#define EXPAND_MACRO(x)    x
-#define STRINGIFY_MACRO(x) #x
+#define MINET_EXPAND_MACRO(x)    x
+#define MINET_STRINGIFY_MACRO(x) #x
 
 #define BIT(x) (1 << (x))
 

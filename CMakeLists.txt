@@ -13,6 +13,10 @@ project(${PROJECT_NAME}
 # dependencies
 add_subdirectory(libs)
 
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    add_compile_definitions(DEBUG)
+endif()
+
 # library properties
 set(LIBRARY_BASE_PATH "${PROJECT_SOURCE_DIR}")
 include_directories("${LIBRARY_BASE_PATH}/include")

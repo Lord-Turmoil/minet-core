@@ -1,18 +1,26 @@
 #pragma once
 
 #include <filesystem>
-
-#include "minet/common/Base.h"
+#include <mioc/mioc.h>
+#include "minet/components/Logger.h"
 
 #ifdef MINET_ENABLE_ASSERT
-#define MINET_DEBUG_BREAK() __debugbreak()
+#define MINET_DEBUG_BREAK() __builtin_trap()
 #else
 #define MINET_DEBUG_BREAK()
 #endif
 
 #ifdef MINET_ENABLE_ASSERT
 
-#define _MINET_ASSERT_LOGGER MINET_EXPAND_MACRO(LOG_CRITICAL)
+#define _MINET_ASSERT_LOGGER(...)                                                                                      \
+    do                                                                                                                 \
+    {                                                                                                                  \
+        auto logger = mioc::SingletonContainer::GetContainer()->Resolve<minet::Logger>();                              \
+        if (logger)                                                                                                    \
+        {                                                                                                              \
+            logger->Critical(__VA_ARGS__);                                                                             \
+        }                                                                                                              \
+    } while (0)
 
 #define _MINET_ASSERT_IMPL(expression, msg, ...)                                                                       \
     do                                                                                                                 \
