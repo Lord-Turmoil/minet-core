@@ -10,11 +10,11 @@ class Logger;
 /**
  * @brief The default server implementation.
  */
-class MayhemServer : public IServer
+class BasicServer : public IServer
 {
 public:
-    MayhemServer(const Ref<Logger>& logger, const Ref<ServerConfig>& config);
-    ~MayhemServer() override = default;
+    BasicServer(const Ref<ServerConfig>& config);
+    ~BasicServer() override;
 
     /**
      * @brief Start the server asynchronously.
@@ -29,12 +29,25 @@ public:
         _onConnectionCallback = callback;
     }
 
-private:
-    void _Serve();
+    const char* Name() const override
+    {
+        return "Minet Basic";
+    }
 
 private:
+    void _Serve();
+    void _DecorateContext(Ref<HttpContext>& context);
+
+    void _OpenSocket();
+    void _CloseSocket();
+
+private:
+    Ref<ServerConfig> _config;
+
     OnConnectionCallback _onConnectionCallback;
-    Ref<Logger> _logger;
+
+    int _listenFd;
+
     bool _isRunning;
 };
 

@@ -14,8 +14,9 @@ class ILoggerFactory
 public:
     virtual ~ILoggerFactory() = default;
 
-    virtual Ref<Logger> GetLogger(std::string name);
-    virtual Ref<Logger> GetDummyLogger();
+    virtual Ref<Logger> GetLogger(std::string name) = 0;
+
+    static Ref<Logger> GetDummyLogger();
 };
 
 MINET_END

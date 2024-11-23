@@ -11,14 +11,10 @@ MINET_BEGIN
  */
 class Logger
 {
+    friend class ILoggerFactory;
+
 public:
     Logger(const LoggerSpecification& config);
-
-    /**
-     * @warning
-     * This will create a dummy logger that does nothing.
-     */
-    Logger();
 
 public:
     // I prefer Uppercase for the first letter of the function name, so I
@@ -121,6 +117,12 @@ public:
     }
 
 private:
+    /**
+     * @warning
+     * This will create a dummy logger that does nothing.
+     */
+    Logger() = default;
+
     void _Init(const LoggerSpecification& config);
 
 private:

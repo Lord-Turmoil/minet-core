@@ -25,7 +25,7 @@ add_library(${BINARY_NAME} ${SRC_LIST})
 
 # target properties
 target_include_directories(${BINARY_NAME} PUBLIC ${INCLUDE_DIRECTORIES})
-target_link_libraries(${BINARY_NAME} mioc spdlog)
+target_link_libraries(${BINARY_NAME} mioc spdlog nlohmann_json)
 
 # install properties
 install (

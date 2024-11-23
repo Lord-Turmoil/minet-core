@@ -1,18 +1,18 @@
-#include "minet/core/RequestDispatcher.h"
+#include "minet/core/IRequestDispatcher.h"
 #include "minet/common/Assert.h"
 #include "minet/components/Logger.h"
+#include "minet/components/LoggerFactory.h"
 #include "minet/core/HttpContext.h"
 #include "minet/core/IRequestHandler.h"
-#include "minet/utils/UrlUtils.h"
+#include "minet/utils/Parser.h"
 
 MINET_BEGIN
 
-RequestDispatcher::RequestDispatcher(Ref<Logger> logger) : _logger(logger)
+IRequestDispatcher::IRequestDispatcher() : _logger(ILoggerFactory::GetDummyLogger())
 {
-    MINET_ASSERT(_logger);
 }
 
-void RequestDispatcher::Register(const std::string& path, const Ref<IRequestHandler>& handler)
+void IRequestDispatcher::Register(const std::string& path, const Ref<IRequestHandler>& handler)
 {
     if (path.empty() || (path == "*"))
     {
@@ -24,35 +24,45 @@ void RequestDispatcher::Register(const std::string& path, const Ref<IRequestHand
     }
     else
     {
-        std::string cleanedPath = utils::CleanUrl(path);
+        std::string cleanedPath = utils::http::CleanPath(path);
         if (_handlers.find(cleanedPath) != _handlers.end())
         {
             _logger->Warn("Handler for path '{}' is already registered, replacing it with the new one", cleanedPath);
         }
         // use [] to insert or update
-        _handlers[utils::CleanUrl(path)] = handler;
+        _handlers[utils::http::CleanPath(path)] = handler;
         _logger->Debug("Registered handler for path '{}'", cleanedPath);
     }
 }
 
-void RequestDispatcher::Dispatch(const Ref<HttpContext>& context)
+void IRequestDispatcher::Dispatch(const Ref<HttpContext>& context)
 {
     MINET_ASSERT(context);
 
-    std::string path = utils::CleanUrl(context->Request.Url);
+    std::string path = utils::http::CleanPath(context->Request.Path);
+    _logger->Debug("Dispatching request {}", path);
+
     auto it = _handlers.find(path);
     if (it != _handlers.end())
     {
-        it->second->Handle(context);
+        _InvokeHandler(it->second, context);
     }
     else if (_defaultHandler)
     {
-        _defaultHandler->Handle(context);
+        _InvokeHandler(_defaultHandler, context);
     }
     else
     {
         _logger->Warn("No handler found for path '{}'", path);
     }
+
+    DestroyHttpContext(context);
+    _logger->Debug("Request {} handled", path);
+}
+
+void IRequestDispatcher::SetLogger(const Ref<Logger>& logger)
+{
+    _logger = logger;
 }
 
 MINET_END

@@ -14,10 +14,13 @@ class Logger;
  * Request dispatcher is responsible for dispatching incoming HttpContext
  * to the corresponding handler.
  */
-class RequestDispatcher final
+class IRequestDispatcher
 {
+    friend class WebHostBuilder;
+
 public:
-    RequestDispatcher(Ref<Logger> logger);
+    IRequestDispatcher();
+    virtual ~IRequestDispatcher() = default;
 
     /**
      * @brief Register a handler for the given path.
@@ -38,9 +41,17 @@ public:
      */
     void Dispatch(const Ref<HttpContext>& context);
 
+protected:
+    virtual void _InvokeHandler(const Ref<IRequestHandler>& handler, const Ref<HttpContext>& context) = 0;
+
 private:
+    // Only used by WebHostBuilder.
+    void SetLogger(const Ref<Logger>& logger);
+
+protected:
     Ref<Logger> _logger;
 
+private:
     std::unordered_map<std::string, Ref<IRequestHandler>> _handlers;
 
     /**

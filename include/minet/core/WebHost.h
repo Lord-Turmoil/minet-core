@@ -6,7 +6,7 @@
 MINET_BEGIN
 
 class IServer;
-class RequestDispatcher;
+class IRequestDispatcher;
 
 /**
  * @brief The core of the web server.
@@ -22,11 +22,12 @@ public:
     void Run();
 
 private:
-    WebHost(Ref<IServer> server, Ref<RequestDispatcher> dispatcher, Ref<mioc::ServiceContainer> container);
+    WebHost(const Ref<IServer>& server, const Ref<IRequestDispatcher>& dispatcher,
+            const Ref<mioc::ServiceContainer>& container);
 
 private:
     Ref<IServer> _server;
-    Ref<RequestDispatcher> _dispatcher;
+    Ref<IRequestDispatcher> _dispatcher;
     Ref<mioc::ServiceContainer> _container;
 };
 

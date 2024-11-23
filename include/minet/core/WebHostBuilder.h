@@ -7,7 +7,7 @@
 MINET_BEGIN
 
 class IRequestHandler;
-class RequestDispatcher;
+class IRequestDispatcher;
 class Logger;
 class WebHost;
 
@@ -25,9 +25,9 @@ public:
 public:
     /**
      * @brief Register a handler for the given path.
-     * @see RequestDispatcher::Register
+     * @see @link RequestDispatcher::Register.
      */
-    void Register(const std::string& path, const Ref<IRequestHandler>& handler);
+    WebHostBuilder& Register(const std::string& path, const Ref<IRequestHandler>& handler);
 
     /**
      * @brief Get the service container.

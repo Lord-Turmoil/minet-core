@@ -13,7 +13,6 @@ public:
     ~LoggerFactory() override = default;
 
     Ref<Logger> GetLogger(std::string name) override;
-    Ref<Logger> GetDummyLogger() override;
 
 private:
     Ref<LoggerConfig> _config;

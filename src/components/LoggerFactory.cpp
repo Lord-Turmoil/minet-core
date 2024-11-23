@@ -29,10 +29,5 @@ Ref<Logger> LoggerFactory::GetLogger(std::string name)
     return logger;
 }
 
-Ref<Logger> LoggerFactory::GetDummyLogger()
-{
-    static Ref<Logger> dummy = CreateRef<Logger>();
-    return dummy;
-}
 
 MINET_END

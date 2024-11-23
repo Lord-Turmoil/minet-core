@@ -25,6 +25,27 @@
 #define MINET_ENABLE_ASSERT
 #endif
 
+#define MINET_TRY(expr)                                                                                                \
+    do                                                                                                                 \
+    {                                                                                                                  \
+        auto __r = expr;                                                                                               \
+        if (__r < 0)                                                                                                   \
+        {                                                                                                              \
+            return __r;                                                                                                \
+        }                                                                                                              \
+    } while (0)
+
+#define MINET_TRY_WITH_ACTION(expr, action)                                                                            \
+    do                                                                                                                 \
+    {                                                                                                                  \
+        auto __r = expr;                                                                                               \
+        if (__r < 0)                                                                                                   \
+        {                                                                                                              \
+            action;                                                                                                    \
+            return __r;                                                                                                \
+        }                                                                                                              \
+    } while (0)
+
 MINET_BEGIN
 
 template <typename T> using Ref = std::shared_ptr<T>;

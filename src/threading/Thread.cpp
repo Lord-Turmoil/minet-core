@@ -54,10 +54,18 @@ Ref<Thread> Thread::Create(ThreadFn routine)
     return CreateRef<Thread>(routine);
 }
 
+void Thread::CleanUp()
+{
+    if (_thread)
+    {
+        Terminate();
+    }
+}
+
 void* Thread::_ThreadRoutine(void* arg)
 {
     ThreadContext* context = static_cast<ThreadContext*>(arg);
-    MINET_ASSERT(context->Routine, "Thread routine is null");
+    MINET_ASSERT(context->Routine);
     context->Routine();
     return nullptr;
 }
