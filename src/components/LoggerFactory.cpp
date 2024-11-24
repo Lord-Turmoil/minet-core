@@ -29,5 +29,4 @@ Ref<Logger> LoggerFactory::GetLogger(std::string name)
     return logger;
 }
 
-
 MINET_END

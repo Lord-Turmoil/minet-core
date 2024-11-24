@@ -32,6 +32,14 @@ Logger::Logger(const LoggerSpecification& config)
     _Init(config);
 }
 
+Logger::~Logger()
+{
+    if (_impl)
+    {
+        _impl->flush();
+    }
+}
+
 void Logger::_Init(const LoggerSpecification& config)
 {
     std::vector<spdlog::sink_ptr> logSinks;
@@ -55,7 +63,9 @@ void Logger::_Init(const LoggerSpecification& config)
     _impl = CreateRef<spdlog::logger>(config.Name, begin(logSinks), end(logSinks));
     register_logger(_impl);
 
-    _impl->set_level(LogLevelToSpdLogLevel(config.Level));
+    auto level = LogLevelToSpdLogLevel(config.Level);
+    _impl->set_level(level);
+    _impl->flush_on(level);
 }
 
 MINET_END

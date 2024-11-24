@@ -49,7 +49,11 @@ Ref<WebHost> WebHostBuilder::Build()
     MINET_ASSERT(server);
     server->SetLogger(loggerFactory->GetLogger("Server"));
 
-    return CreateRef<WebHost>(new WebHost(server, dispatcher, _container));
+    // Build Web host.
+    Ref<WebHost> host = CreateRef<WebHost>(new WebHost(server, dispatcher, _container));
+    host->SetLogger(loggerFactory->GetLogger("WebHost"));
+
+    return host;
 }
 
 MINET_END

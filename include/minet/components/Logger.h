@@ -15,6 +15,7 @@ class Logger
 
 public:
     Logger(const LoggerSpecification& config);
+    ~Logger();
 
 public:
     // I prefer Uppercase for the first letter of the function name, so I

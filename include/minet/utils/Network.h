@@ -19,6 +19,10 @@ struct AcceptData
  * @param port The port to connect to.
  * @param block Whether to set the socket to blocking mode.
  * @ref https://www.geeksforgeeks.org/socket-programming-cc/
+ * @note
+ * If block set to true, then @link accept @endlink will block
+ * until a new connection arrives. This may hang the server
+ * when interrupt signal received.
  */
 int OpenSocket(uint16_t port, bool block = false);
 

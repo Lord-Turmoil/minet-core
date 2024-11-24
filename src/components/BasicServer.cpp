@@ -63,7 +63,6 @@ void BasicServer::Stop()
         _logger->Warn("Server is not running");
     }
     _isRunning = false;
-    _logger->Info("Server shut down");
 }
 
 void BasicServer::_Serve()
@@ -88,7 +87,10 @@ void BasicServer::_Serve()
         }
     }
 
+    _logger->Debug("Closing server socket");
     _CloseSocket();
+
+    _logger->Info("{} server shut down", Name());
 }
 
 void BasicServer::_DecorateContext(Ref<HttpContext>& context)
@@ -98,7 +100,7 @@ void BasicServer::_DecorateContext(Ref<HttpContext>& context)
 
 void BasicServer::_OpenSocket()
 {
-    _listenFd = utils::network::OpenSocket(_config->Port, true);
+    _listenFd = utils::network::OpenSocket(_config->Port);
     if (_listenFd < 0)
     {
         _logger->Error("Failed to open socket: {}", _listenFd);
