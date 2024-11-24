@@ -30,7 +30,7 @@ WebHost::WebHost(const Ref<IServer>& server, const Ref<IRequestDispatcher>& disp
 
 void WebHost::_OnInterrupted()
 {
-    _logger->Warn("Received abort signal, stopping WebHost");
+    _logger->Warn("^C received, stopping");
     _server->Stop();
 }
 

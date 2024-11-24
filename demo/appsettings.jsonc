@@ -16,7 +16,7 @@
             "level": "Debug",
             "sinks": [
                 "stdout",
-                "somefile.log"
+                "webhost.log"
             ]
         }
     }

@@ -11,7 +11,7 @@ if [ $? -ne 0 ]; then
 fi
 
 BIN=./build/demo/minet-demo
-ARGS=${1:-"demo/appsettings.json"}
+ARGS=${1:-"demo/appsettings.jsonc"}
 if [ ! -f "$BIN" ]; then
     echo "Binary file not found: $BIN"
     exit 1

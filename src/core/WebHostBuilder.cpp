@@ -71,7 +71,7 @@ WebHostBuilder& WebHostBuilder::_RegisterErrorHandler(int statusCode, const Ref<
 }
 
 /**
- * See demo/appsettings.json for more information.
+ * See demo/appsettings.jsonc for more information.
  */
 void WebHostBuilder::_LoadSettings()
 {
@@ -92,7 +92,7 @@ void WebHostBuilder::_LoadSettings()
         else
         {
             _config = json::object();
-            std::cerr << "No " << _appSettingsPath << " found, use default settings." << '\n';
+            std::cerr << _appSettingsPath << " not found, use default settings." << '\n';
         }
         file.close();
     }
