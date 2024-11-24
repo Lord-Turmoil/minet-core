@@ -16,6 +16,11 @@ public:
     BasicServer(const Ref<ServerConfig>& config);
     ~BasicServer() override;
 
+    static const char* Identifier()
+    {
+        return "Basic";
+    }
+
     /**
      * @brief Start the server asynchronously.
      * @return The asnyc task.

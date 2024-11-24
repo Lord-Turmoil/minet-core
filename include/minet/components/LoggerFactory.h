@@ -12,7 +12,7 @@ public:
     LoggerFactory(const Ref<LoggerConfig>& config);
     ~LoggerFactory() override = default;
 
-    Ref<Logger> GetLogger(std::string name) override;
+    Ref<Logger> GetLogger(const std::string& name) override;
 
 private:
     Ref<LoggerConfig> _config;

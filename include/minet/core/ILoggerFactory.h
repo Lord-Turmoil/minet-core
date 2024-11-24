@@ -14,7 +14,7 @@ class ILoggerFactory
 public:
     virtual ~ILoggerFactory() = default;
 
-    virtual Ref<Logger> GetLogger(std::string name) = 0;
+    virtual Ref<Logger> GetLogger(const std::string& name) = 0;
 
     static Ref<Logger> GetDummyLogger();
 };

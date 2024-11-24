@@ -7,24 +7,25 @@ LoggerFactory::LoggerFactory(const Ref<LoggerConfig>& config) : _config(config)
 {
 }
 
-Ref<Logger> LoggerFactory::GetLogger(std::string name)
+Ref<Logger> LoggerFactory::GetLogger(const std::string& name)
 {
-    auto it = _loggers.find(name);
-    if (it != _loggers.end())
+    if (auto it = _loggers.find(name); it != _loggers.end())
     {
         return it->second;
     }
 
-    LogLevel level = _config->RootLevel;
-    auto it2 = _config->Levels.find(name);
-    if (it2 != _config->Levels.end())
+    Ref<Logger> logger;
+    auto it = _config->Specifications.find(name);
+    if (it == _config->Specifications.end())
     {
-        level = it2->second;
+        LoggerSpecification spec{ name, _config->DefaultLevel, _config->DefaultSinks };
+        logger = CreateRef<Logger>(spec);
     }
-
-    LoggerSpecification spec{ std::move(name), level, _config->Sinks };
-    auto logger = CreateRef<Logger>(spec);
-    _loggers[spec.Name] = logger;
+    else
+    {
+        logger = CreateRef<Logger>(it->second);
+    }
+    _loggers[name] = logger;
 
     return logger;
 }

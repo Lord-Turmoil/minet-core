@@ -10,9 +10,8 @@ MINET_BEGIN
 BasicServer::BasicServer(const Ref<ServerConfig>& config) : _config(config), _listenFd(0), _isRunning(false)
 {
     MINET_ASSERT(config);
-
-    // TODO: prepare config
 }
+
 BasicServer::~BasicServer()
 {
     _CloseSocket();

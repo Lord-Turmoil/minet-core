@@ -1,6 +1,7 @@
 #pragma once
 
 #include <mioc/mioc.h>
+#include <nlohmann/json.hpp>
 #include <unordered_map>
 #include "minet/common/Base.h"
 
@@ -20,7 +21,7 @@ class WebHost;
 class WebHostBuilder final
 {
 public:
-    WebHostBuilder();
+    WebHostBuilder(std::string appSettingsPath = "appsettings.json");
 
 public:
     /**
@@ -39,13 +40,27 @@ public:
         return _container;
     }
 
-public:
     /**
      * Build the web host.
      */
     Ref<WebHost> Build();
 
 private:
+    void _LoadSettings();
+    void _LoadServerSettings(const nlohmann::json& config);
+    void _LoadLoggingSettings(const nlohmann::json& config);
+
+private:
+    /**
+     * Path to the app settings file.
+     */
+    std::string _appSettingsPath;
+
+    /**
+     * Configuration from the app settings file, or default settings.
+     */
+    nlohmann::json _config;
+
     /**
      * Handlers for the web host.
      */

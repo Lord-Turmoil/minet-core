@@ -18,31 +18,14 @@ enum class LogLevel : unsigned char
     Warning,
     Error,
     Critical,
-    Disabled
+    Disabled,
+    Invalid
 };
 
 /**
- * @brief Global logger factory configuration.
+ * @brief Parse log level from string.
  */
-struct LoggerConfig
-{
-    /**
-     * Default level for all loggers.
-     */
-    LogLevel RootLevel;
-
-    /**
-     * Sinks are the output destinations of the log messages.
-     * Use "stdout" for console output and "stderr" for error output.
-     * Other names will be treated as file paths.
-     */
-    std::vector<std::string> Sinks;
-
-    /**
-     * Can set different levels for different loggers.
-     */
-    std::unordered_map<std::string, LogLevel> Levels;
-};
+LogLevel ParseLogLevel(std::string level);
 
 /**
  * @brief Specification for each logger.
@@ -57,7 +40,30 @@ struct LoggerSpecification
     /**
      * This is a reference to the global sinks.
      */
-    const std::vector<std::string>& Sinks;
+    std::vector<std::string> Sinks;
+};
+
+/**
+ * @brief Global logger factory configuration.
+ */
+struct LoggerConfig
+{
+    /**
+     * Default level for all loggers.
+     */
+    LogLevel DefaultLevel;
+
+    /**
+     * Sinks are the output destinations of the log messages.
+     * Use "stdout" for console output and "stderr" for error output.
+     * Other names will be treated as file paths.
+     */
+    std::vector<std::string> DefaultSinks;
+
+    /**
+     * Can override specification for each logger.
+     */
+    std::unordered_map<std::string, LoggerSpecification> Specifications;
 };
 
 MINET_END

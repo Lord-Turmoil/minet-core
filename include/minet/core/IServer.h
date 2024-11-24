@@ -17,7 +17,7 @@ struct ServerConfig
     /**
      * @brief The port number to listen on.
      */
-    int16_t Port;
+    uint16_t Port;
 };
 
 /**
