@@ -92,7 +92,7 @@ void BasicServer::_Serve()
     _logger->Info("{} server shut down", Name());
 }
 
-void BasicServer::_DecorateContext(Ref<HttpContext>& context)
+void BasicServer::_DecorateContext(const Ref<HttpContext>& context)
 {
     context->Response.Headers["Server"] = Name();
 }

@@ -13,32 +13,28 @@ Task::Task() : _thread(nullptr)
 {
 }
 
-int Task::StartAsync()
+int Task::StartAsync() const
 {
     return _thread ? _thread->Start() : 0;
 }
 
-int Task::Await()
+int Task::Await() const
 {
     return _thread ? _thread->Join() : 0;
 }
 
-int Task::Run()
+int Task::Run() const
 {
-    int ret = StartAsync();
-    if (ret)
-    {
-        return ret;
-    }
+    MINET_TRY(StartAsync());
     return Await();
 }
 
-int Task::Cancel()
+int Task::Cancel() const
 {
     return _thread ? _thread->Terminate() : 0;
 }
 
-Ref<Task> Task::Create(Ref<Thread> thread)
+Ref<Task> Task::Create(const Ref<Thread>& thread)
 {
     return CreateRef<Task>(thread);
 }

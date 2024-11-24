@@ -15,7 +15,7 @@ namespace native
  * @return 0 on success, others on failure.
  * @note If the handler is already set, it will be replaced.
  */
-int SetSignalHandler(int sig, const std::function<void(void)>& handler, bool once = true);
+int SetSignalHandler(int sig, const std::function<void()>& handler, bool once = true);
 
 /**
  * @brief Remove the signal handler for the given signal.

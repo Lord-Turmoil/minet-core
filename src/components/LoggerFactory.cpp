@@ -15,8 +15,7 @@ Ref<Logger> LoggerFactory::GetLogger(const std::string& name)
     }
 
     Ref<Logger> logger;
-    auto it = _config->Specifications.find(name);
-    if (it == _config->Specifications.end())
+    if (auto it = _config->Specifications.find(name); it == _config->Specifications.end())
     {
         LoggerSpecification spec{ name, _config->DefaultLevel, _config->DefaultSinks };
         logger = CreateRef<Logger>(spec);

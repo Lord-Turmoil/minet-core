@@ -22,9 +22,10 @@ static spdlog::level::level_enum LogLevelToSpdLogLevel(LogLevel level)
     case LogLevel::Critical:
         return spdlog::level::critical;
     case LogLevel::Disabled:
+    case LogLevel::Invalid:
         return spdlog::level::off;
     }
-    return spdlog::level::trace;
+    return spdlog::level::off;
 }
 
 Logger::Logger(const LoggerSpecification& config)

@@ -9,7 +9,7 @@ namespace native
 struct SignalHandlerRegistration
 {
     int Signal;
-    std::function<void(void)> Handler;
+    std::function<void()> Handler;
     bool Once;
 };
 
@@ -17,7 +17,7 @@ static std::unordered_map<int, SignalHandlerRegistration> sSignalHandlers;
 
 static void _SignalHandler(int sig);
 
-int SetSignalHandler(int sig, const std::function<void(void)>& handler, bool once)
+int SetSignalHandler(int sig, const std::function<void()>& handler, bool once)
 {
     sSignalHandlers[sig] = { sig, handler, once };
     signal(sig, _SignalHandler);

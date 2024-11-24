@@ -10,7 +10,7 @@ namespace io
 size_t BufferedStreamReader::_sBufferSize = 1024;
 
 BufferedStreamReader::BufferedStreamReader(const Ref<Stream>& stream)
-    : StreamReader(stream), _buffer(new char[_sBufferSize]), _head(_buffer), _tail(_buffer)
+    : StreamReader(stream), _buffer(new char[_sBufferSize]), _head(_buffer), _tail(_buffer), _eof(false)
 {
 }
 

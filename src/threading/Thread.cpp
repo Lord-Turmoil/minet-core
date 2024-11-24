@@ -10,7 +10,12 @@ Thread::Thread(ThreadFn routine) : _thread(0)
 
 Thread::~Thread()
 {
-    CleanUp();
+    _CleanUp();
+}
+
+Ref<Thread> Thread::Create(const ThreadFn& routine)
+{
+    return CreateRef<Thread>(routine);
 }
 
 int Thread::Start()
@@ -49,12 +54,7 @@ int Thread::Terminate()
     return ret;
 }
 
-Ref<Thread> Thread::Create(ThreadFn routine)
-{
-    return CreateRef<Thread>(routine);
-}
-
-void Thread::CleanUp()
+void Thread::_CleanUp()
 {
     if (_thread)
     {

@@ -41,7 +41,7 @@ public:
 
 private:
     void _Serve();
-    void _DecorateContext(Ref<HttpContext>& context);
+    void _DecorateContext(const Ref<HttpContext>& context);
 
     void _OpenSocket();
     void _CloseSocket();

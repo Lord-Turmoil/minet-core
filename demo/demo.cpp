@@ -2,7 +2,7 @@
 
 using namespace minet;
 
-void ping(const TextRequest& request, TextResponse& response)
+static void ping(const TextRequest& request, TextResponse& response)
 {
     response.Text().append("pong\n");
 }

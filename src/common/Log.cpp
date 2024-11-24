@@ -11,38 +11,35 @@ LogLevel ParseLogLevel(std::string level)
     {
         return LogLevel::All;
     }
-    else if (level == "fine")
+    if (level == "fine")
     {
         return LogLevel::Fine;
     }
-    else if (level == "debug")
+    if (level == "debug")
     {
         return LogLevel::Debug;
     }
-    else if (level == "info")
+    if (level == "info")
     {
         return LogLevel::Info;
     }
-    else if (level == "warning")
+    if (level == "warning")
     {
         return LogLevel::Warning;
     }
-    else if (level == "error")
+    if (level == "error")
     {
         return LogLevel::Error;
     }
-    else if (level == "critical")
+    if (level == "critical")
     {
         return LogLevel::Critical;
     }
-    else if (level == "disabled")
+    if (level == "disabled")
     {
         return LogLevel::Disabled;
     }
-    else
-    {
-        return LogLevel::Invalid;
-    }
+    return LogLevel::Invalid;
 }
 
 MINET_END

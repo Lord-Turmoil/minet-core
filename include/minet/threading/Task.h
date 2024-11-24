@@ -20,30 +20,30 @@ public:
      * @brief Start the task asynchronously.
      * @return 0 if successful, otherwise an error code.
      */
-    int StartAsync();
+    int StartAsync() const;
 
     /**
      * @brief Wait for the task to finish.
      * @return 0 if successful, otherwise an error code.
      */
-    int Await();
+    int Await() const;
 
     /**
      * @brief Run the task synchronously.
      * @return 0 if successful, otherwise an error code.
      */
-    int Run();
+    int Run() const;
 
     /**
      * @brief Cancel the task if it's running.
      * @return 0 if successful, otherwise an error code.
      */
-    int Cancel();
+    int Cancel() const;
 
     /**
      * @brief Create a task with the given thread.
      */
-    static Ref<Task> Create(Ref<Thread> thread);
+    static Ref<Task> Create(const Ref<Thread>& thread);
 
     /**
      * @brief Create a completed task.

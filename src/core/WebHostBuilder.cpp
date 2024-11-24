@@ -12,8 +12,8 @@ MINET_BEGIN
 
 static void _PrintBanner();
 
-WebHostBuilder::WebHostBuilder(std::string appsettingsPath)
-    : _appSettingsPath(std::move(appsettingsPath)), _container(mioc::ServiceContainer::New(true))
+WebHostBuilder::WebHostBuilder(std::string appSettingsPath)
+    : _appSettingsPath(std::move(appSettingsPath)), _container(mioc::ServiceContainer::New(true))
 {
     _PrintBanner();
     _LoadSettings();
@@ -65,7 +65,7 @@ void WebHostBuilder::_LoadSettings()
     }
     else
     {
-        std::cout << "Loading app settings from " << _appSettingsPath << std::endl;
+        std::cout << "Loading app settings from " << _appSettingsPath << '\n';
         std::ifstream file(_appSettingsPath);
         if (file.is_open())
         {
@@ -74,19 +74,19 @@ void WebHostBuilder::_LoadSettings()
         else
         {
             _config = json::object();
-            std::cerr << "No " << _appSettingsPath << " found, use default settings." << std::endl;
+            std::cerr << "No " << _appSettingsPath << " found, use default settings." << '\n';
         }
         file.close();
     }
 
     if (_config.is_discarded())
     {
-        std::cerr << "Failed to parse app settings file: " << _appSettingsPath << std::endl;
+        std::cerr << "Failed to parse app settings file: " << _appSettingsPath << '\n';
         abort();
     }
 
-    _LoadServerSettings(_config.value("server", nlohmann::json::object()));
-    _LoadLoggingSettings(_config.value("logging", nlohmann::json::object()));
+    _LoadServerSettings(_config.value("server", json::object()));
+    _LoadLoggingSettings(_config.value("logging", json::object()));
 }
 
 void WebHostBuilder::_LoadServerSettings(const nlohmann::json& config)
@@ -94,7 +94,7 @@ void WebHostBuilder::_LoadServerSettings(const nlohmann::json& config)
     int port = config.value("port", 5000);
     if (port <= 0 || port > 65535)
     {
-        std::cerr << "Invalid port number: " << port << ", use default 5000 instead." << std::endl;
+        std::cerr << "Invalid port number: " << port << ", use default 5000 instead." << '\n';
         port = 5000;
     }
     _container->AddSingleton<ServerConfig>(CreateRef<ServerConfig>(new ServerConfig{ static_cast<uint16_t>(port) }));
@@ -107,7 +107,7 @@ void WebHostBuilder::_LoadServerSettings(const nlohmann::json& config)
     }
     else
     {
-        std::cerr << "Invalid server name: " << name << std::endl;
+        std::cerr << "Invalid server name: " << name << '\n';
         abort();
     }
 }
@@ -125,7 +125,7 @@ void WebHostBuilder::_LoadLoggingSettings(const nlohmann::json& config)
         if (level == LogLevel::Invalid)
         {
             std::cerr << "Invalid log level: " << spec.value("level", "Debug") << ", use default Debug instead."
-                      << std::endl;
+                      << '\n';
             level = LogLevel::Debug;
         }
         std::vector<std::string> sinks = spec.value("sinks", std::vector<std::string>{ "stdout" });
@@ -176,7 +176,7 @@ void _PrintBanner()
 ------------------------------------------------------
   A C++ HTTP server framework mimicking ASP.NET Core
 )";
-    std::cout << banner << std::endl;
+    std::cout << banner << '\n';
 }
 
 MINET_END

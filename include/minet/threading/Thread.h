@@ -26,6 +26,8 @@ public:
     Thread(ThreadFn routine);
     ~Thread();
 
+    static Ref<Thread> Create(const ThreadFn& routine);
+
     /**
      * @brief Start the thread.
      * @return 0 if successful, otherwise an error code.
@@ -74,13 +76,11 @@ public:
         return _thread != 0;
     }
 
-    static Ref<Thread> Create(ThreadFn routine);
-
 private:
     /**
      * @brief Cleanup the thread when it stops.
      */
-    void CleanUp();
+    void _CleanUp();
 
 private:
     // Since pthread routine requries a void* arg, we need to adapt
