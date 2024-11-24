@@ -1,12 +1,14 @@
 #!/bin/bash
 
 flag=""
-if [ "$1" == "-g" ]; then
+if [ "$1" == "debug" ]; then
     profile="build-debug"
     flag="$flag -DCMAKE_BUILD_TYPE=Debug"
-else
+elif [ "$1" == "release" ]; then
     profile="build-release"
     flag="$flag -DCMAKE_BUILD_TYPE=Release"
+else
+    profile="build"
 fi
 
 # if profile directory does not exist, create it
