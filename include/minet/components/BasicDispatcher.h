@@ -10,7 +10,7 @@ public:
     ~BasicDispatcher() override = default;
 
 private:
-    void _InvokeHandler(const Ref<IRequestHandler>& handler, const Ref<HttpContext>& context) override;
+    int _InvokeHandler(const Ref<IRequestHandler>& handler, const Ref<HttpContext>& context) override;
 
     void _WriteResponse(const Ref<HttpContext>& context);
 };

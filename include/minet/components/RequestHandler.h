@@ -5,6 +5,7 @@
 #include "minet/components/Responses.h"
 #include "minet/core/HttpContext.h"
 #include "minet/core/IRequestHandler.h"
+#include "minet/utils/Http.h"
 
 MINET_BEGIN
 
@@ -41,12 +42,20 @@ public:
     {
     }
 
-    void Handle(const Ref<HttpContext>& context) override
+    int Handle(const Ref<HttpContext>& context) override
     {
         TRequest request = RequestFormatter<TRequest>::PreHandle(context->Request);
         TResponse response = ResponseFormatter<TResponse>::PreHandle(context->Response);
-        _handler(request, response);
+        if (request.IsValid())
+        {
+            _handler(request, response);
+        }
+        else
+        {
+            return http::status::BAD_REQUEST;
+        }
         ResponseFormatter<TResponse>::PostHandle(response);
+        return http::status::OK;
     }
 
     static Ref<IRequestHandler> Bind(const std::function<void(const TRequest&, TResponse&)>& handler)

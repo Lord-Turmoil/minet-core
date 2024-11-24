@@ -6,7 +6,7 @@ MINET_BEGIN
 
 LogLevel ParseLogLevel(std::string level)
 {
-    std::transform(level.begin(), level.end(), level.begin(), ::tolower);
+    std::transform(level.begin(), level.end(), level.begin(), tolower);
     if (level == "all")
     {
         return LogLevel::All;

@@ -6,10 +6,14 @@
 
 MINET_BEGIN
 
-void BasicDispatcher::_InvokeHandler(const Ref<IRequestHandler>& handler, const Ref<HttpContext>& context)
+int BasicDispatcher::_InvokeHandler(const Ref<IRequestHandler>& handler, const Ref<HttpContext>& context)
 {
-    handler->Handle(context);
-    _WriteResponse(context);
+    int statusCode = handler->Handle(context);
+    if (statusCode == http::status::OK)
+    {
+        _WriteResponse(context);
+    }
+    return statusCode;
 }
 
 void BasicDispatcher::_WriteResponse(const Ref<HttpContext>& context)

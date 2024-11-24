@@ -26,6 +26,11 @@ public:
         return _request->Body;
     }
 
+    bool IsValid() const
+    {
+        return true;
+    }
+
 private:
     const HttpRequest* _request;
 };

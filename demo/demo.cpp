@@ -9,7 +9,7 @@ static void ping(const TextRequest& request, TextResponse& response)
 
 int main(int argc, char* argv[])
 {
-    WebHostBuilder((argc == 2) ? argv[1] : "").Register("/ping", RequestHandler<>::Bind(ping)).Build()->Run();
+    WebHostBuilder((argc == 2) ? argv[1] : "").Get("/ping", RequestHandler<>::Bind(ping)).Build()->Run();
 
     return 0;
 }

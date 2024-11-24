@@ -20,7 +20,8 @@ enum class HttpMethod
     HEAD,
     OPTIONS,
     TRACE,
-    PATCH
+    PATCH,
+    ANY, // a wildcard, used for dispatcher
 };
 
 // FIXME: Request and response struct is not well aligned.

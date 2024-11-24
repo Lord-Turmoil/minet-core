@@ -17,12 +17,22 @@ WebHostBuilder::WebHostBuilder(std::string appSettingsPath)
 {
     _PrintBanner();
     _LoadSettings();
+    _InitializeComponents();
 }
 
-WebHostBuilder& WebHostBuilder::Register(const std::string& path, const Ref<IRequestHandler>& handler)
+WebHostBuilder& WebHostBuilder::Get(const std::string& path, const Ref<IRequestHandler>& handler)
 {
-    _handlers[path] = handler;
-    return *this;
+    return _RegisterHandler(path, HttpMethod::GET, handler);
+}
+
+WebHostBuilder& WebHostBuilder::Post(const std::string& path, const Ref<IRequestHandler>& handler)
+{
+    return _RegisterHandler(path, HttpMethod::POST, handler);
+}
+
+WebHostBuilder& WebHostBuilder::Error(int statusCode, const Ref<IRequestHandler>& handler)
+{
+    return _RegisterErrorHandler(statusCode, handler);
 }
 
 Ref<WebHost> WebHostBuilder::Build()
@@ -34,11 +44,6 @@ Ref<WebHost> WebHostBuilder::Build()
     // Create request dispatcher.
     Ref<IRequestDispatcher> dispatcher = _container->Resolve<IRequestDispatcher>();
     MINET_ASSERT(dispatcher);
-    dispatcher->SetLogger(loggerFactory->GetLogger("RequestDispatcher"));
-    for (const auto& [path, handler] : _handlers)
-    {
-        dispatcher->Register(path, handler);
-    }
 
     // Get server.
     Ref<IServer> server = _container->Resolve<IServer>();
@@ -50,6 +55,19 @@ Ref<WebHost> WebHostBuilder::Build()
     host->SetLogger(loggerFactory->GetLogger("WebHost"));
 
     return host;
+}
+
+WebHostBuilder& WebHostBuilder::_RegisterHandler(const std::string& path, HttpMethod method,
+                                                 const Ref<IRequestHandler>& handler)
+{
+    _container->Resolve<IRequestDispatcher>()->RegisterHandler(path, method, handler);
+    return *this;
+}
+
+WebHostBuilder& WebHostBuilder::_RegisterErrorHandler(int statusCode, const Ref<IRequestHandler>& handler)
+{
+    _container->Resolve<IRequestDispatcher>()->RegisterErrorHandler(statusCode, handler);
+    return *this;
 }
 
 /**
@@ -120,7 +138,7 @@ void WebHostBuilder::_LoadLoggingSettings(const nlohmann::json& config)
     for (auto it = config.begin(); it != config.end(); ++it)
     {
         std::string name = it.key();
-        nlohmann::json spec = it.value();
+        const nlohmann::json& spec = it.value();
         LogLevel level = ParseLogLevel(spec.value("level", "Debug"));
         if (level == LogLevel::Invalid)
         {
@@ -142,9 +160,7 @@ void WebHostBuilder::_LoadLoggingSettings(const nlohmann::json& config)
         }
     }
 
-    /**
-     * In case there is no root logger, we will set the default settings.
-     */
+    // In case there is no root logger, we will set the default settings.
     if (!hasRoot)
     {
         loggerConfig->DefaultLevel = LogLevel::Debug;
@@ -152,7 +168,19 @@ void WebHostBuilder::_LoadLoggingSettings(const nlohmann::json& config)
     }
 
     _container->AddSingleton<LoggerConfig>(loggerConfig);
+}
+
+void WebHostBuilder::_InitializeComponents()
+{
+    // Some components are added when loading the settings.
+
     _container->AddSingleton<ILoggerFactory, LoggerFactory, LoggerConfig>();
+
+    // Since we will register handlers before build, we have to initialize
+    // the dispatcher first.
+    auto loggerFactory = _container->Resolve<ILoggerFactory>();
+    auto dispatcher = _container->Resolve<IRequestDispatcher>();
+    dispatcher->SetLogger(loggerFactory->GetLogger("RequestDispatcher"));
 }
 
 /**

@@ -15,7 +15,7 @@ class IRequestHandler
 public:
     virtual ~IRequestHandler() = default;
 
-    virtual void Handle(const Ref<HttpContext>& context) = 0;
+    virtual int Handle(const Ref<HttpContext>& context) = 0;
 };
 
 MINET_END

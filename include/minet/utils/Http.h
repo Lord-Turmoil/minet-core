@@ -12,6 +12,7 @@ constexpr int OK                    = 200;
 constexpr int NO_CONTENT            = 204;
 constexpr int BAD_REQUEST           = 400;
 constexpr int NOT_FOUND             = 404;
+constexpr int METHOD_NOT_ALLOWED    = 405;
 constexpr int INTERNAL_SERVER_ERROR = 500;
 // clang-format on
 } // namespace status

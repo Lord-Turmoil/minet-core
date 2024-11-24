@@ -28,7 +28,10 @@ public:
      * @brief Register a handler for the given path.
      * @see @link RequestDispatcher::Register.
      */
-    WebHostBuilder& Register(const std::string& path, const Ref<IRequestHandler>& handler);
+
+    WebHostBuilder& Get(const std::string& path, const Ref<IRequestHandler>& handler);
+    WebHostBuilder& Post(const std::string& path, const Ref<IRequestHandler>& handler);
+    WebHostBuilder& Error(int statusCode, const Ref<IRequestHandler>& handler);
 
     /**
      * @brief Get the service container.
@@ -46,9 +49,13 @@ public:
     Ref<WebHost> Build();
 
 private:
+    WebHostBuilder& _RegisterHandler(const std::string& path, HttpMethod method, const Ref<IRequestHandler>& handler);
+    WebHostBuilder& _RegisterErrorHandler(int statusCode, const Ref<IRequestHandler>& handler);
+
     void _LoadSettings();
     void _LoadServerSettings(const nlohmann::json& config);
     void _LoadLoggingSettings(const nlohmann::json& config);
+    void _InitializeComponents();
 
 private:
     /**
@@ -62,12 +69,7 @@ private:
     nlohmann::json _config;
 
     /**
-     * Handlers for the web host.
-     */
-    std::unordered_map<std::string, Ref<IRequestHandler>> _handlers;
-
-    /**
-     * The IOC container with all plugable services.
+     * The IOC container with all pluggable services.
      */
     Ref<mioc::ServiceContainer> _container;
 };
