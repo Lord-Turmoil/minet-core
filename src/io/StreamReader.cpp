@@ -27,7 +27,6 @@ int BufferedStreamReader::Read()
 
 ssize_t BufferedStreamReader::Read(char* buffer, size_t length)
 {
-    _Flush();
     if (IsEof())
     {
         return EOF;
@@ -36,12 +35,20 @@ ssize_t BufferedStreamReader::Read(char* buffer, size_t length)
     size_t remaining = length;
     while (remaining > 0 && !IsEof())
     {
+        if (_IsEmpty())
+        {
+            _Flush();
+            if (IsEof())
+            {
+                break;
+            }
+        }
+
         size_t size = std::min(length, _BufferSize());
         std::memcpy(buffer, _head, size);
         _head += size;
         buffer += size;
         remaining -= size;
-        _Flush();
     }
 
     return static_cast<ssize_t>(length - remaining);
@@ -74,4 +81,5 @@ void BufferedStreamReader::_Flush()
 }
 
 } // namespace io
+
 MINET_END

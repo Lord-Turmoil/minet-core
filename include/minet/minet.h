@@ -7,6 +7,7 @@
 
 #include <minet/components/BasicDispatcher.h>
 #include <minet/components/BasicServer.h>
+#include <minet/components/Logger.h>
 #include <minet/components/RequestHandler.h>
 #include <minet/components/Requests.h>
 #include <minet/components/Responses.h>

@@ -6,41 +6,51 @@
 
 MINET_BEGIN
 
-/**
- * @brief Wrapper for text response.
- */
-class TextResponse
+class HttpResponseWrapper
 {
 public:
-    TextResponse(HttpResponse* response);
+    HttpResponseWrapper(HttpResponse* response) : _response(response)
+    {
+    }
 
-    HttpResponse& GetResponse() const
+    virtual ~HttpResponseWrapper() = 0;
+
+    HttpResponse& Response() const
     {
         return *_response;
     }
+
+    std::string ToString() const
+    {
+        return _response->ToString();
+    }
+
+protected:
+    HttpResponse* _response;
+};
+
+/**
+ * @brief Wrapper for text response.
+ */
+class TextResponse : public HttpResponseWrapper
+{
+public:
+    TextResponse(HttpResponse* response);
 
     std::string& Text() const
     {
         return _response->Body;
     }
-
-private:
-    HttpResponse* _response;
 };
 
 /**
  * @brief Wrapper for JSON response.
  * @warning Do not modify the original body in the response.
  */
-class JsonResponse
+class JsonResponse : public HttpResponseWrapper
 {
 public:
     JsonResponse(HttpResponse* response);
-
-    HttpResponse& GetResponse() const
-    {
-        return *_response;
-    }
 
     nlohmann::json& Json()
     {
@@ -48,7 +58,6 @@ public:
     }
 
 private:
-    HttpResponse* _response;
     nlohmann::json _json;
 };
 

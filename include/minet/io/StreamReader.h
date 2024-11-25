@@ -44,6 +44,10 @@ private:
     {
         return _tail - _head;
     }
+    bool _IsEmpty() const
+    {
+        return _head == _tail;
+    }
     void _Flush();
 
 private:

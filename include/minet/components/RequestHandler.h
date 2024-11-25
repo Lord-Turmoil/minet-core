@@ -12,6 +12,9 @@ MINET_BEGIN
 /**
  * @brief Request type adapter.
  * @tparam TRequest Type of the request.
+ * @note
+ * All specializations should have a static method named PreHandle.
+ * It is to construct the request wrapper from the original HttpRequest.
  */
 template <typename TRequest> struct RequestFormatter
 {
@@ -24,6 +27,10 @@ template <typename TRequest> struct RequestFormatter
 /**
  * @brief Response type adapter.
  * @tparam TResponse Type of the response.
+ * @note
+ * All specializations should have two static methods named PreHandle and PostHandle.
+ * PreHandle is to construct the response wrapper from the original HttpResponse.
+ * PostHandle is to modify the HttpResponse after the request handler has been executed.
  */
 template <typename TResponse> struct ResponseFormatter
 {
@@ -82,7 +89,7 @@ template <> struct ResponseFormatter<TextResponse>
 
     static void PostHandle(TextResponse& response)
     {
-        response.GetResponse().ContentType = "text/plain";
+        response.Response().ContentType = "text/plain";
     }
 };
 
@@ -95,8 +102,8 @@ template <> struct ResponseFormatter<JsonResponse>
 
     static void PostHandle(JsonResponse& response)
     {
-        response.GetResponse().ContentType = "application/json";
-        response.GetResponse().Body = response.Json().dump(-1, ' ', true, nlohmann::json::error_handler_t::replace);
+        response.Response().ContentType = "application/json";
+        response.Response().Body = response.Json().dump(-1, ' ', true, nlohmann::json::error_handler_t::replace);
     }
 };
 

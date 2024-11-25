@@ -6,47 +6,57 @@
 
 MINET_BEGIN
 
-/**
- * @brief Wrapper for plain text request.
- */
-class TextRequest
+class HttpRequestWrapper
 {
 public:
-    TextRequest(const HttpRequest* request) : _request(request)
+    HttpRequestWrapper(const HttpRequest* request) : _request(request)
     {
     }
+
+    virtual ~HttpRequestWrapper() = 0;
 
     const HttpRequest& Request() const
     {
         return *_request;
+    }
+
+    virtual bool IsValid() const
+    {
+        return true;
+    }
+
+    std::string ToString() const
+    {
+        return _request->ToString();
+    }
+
+protected:
+    const HttpRequest* _request;
+};
+
+/**
+ * @brief Wrapper for plain text request.
+ */
+class TextRequest : public HttpRequestWrapper
+{
+public:
+    TextRequest(const HttpRequest* request) : HttpRequestWrapper(request)
+    {
     }
 
     const std::string& Text() const
     {
         return _request->Body;
     }
-
-    bool IsValid() const
-    {
-        return true;
-    }
-
-private:
-    const HttpRequest* _request;
 };
 
 /**
  * @brief Wrapper for json request.
  */
-class JsonRequest
+class JsonRequest : public HttpRequestWrapper
 {
 public:
     JsonRequest(const HttpRequest* request);
-
-    const HttpRequest& Request() const
-    {
-        return *_request;
-    }
 
     const nlohmann::json& Json() const
     {
@@ -57,13 +67,12 @@ public:
      * @brief Check if this JSON request is in valid format or not.
      * @return Whether valid.
      */
-    bool IsValid() const
+    bool IsValid() const override
     {
         return !_json.is_discarded();
     }
 
 private:
-    const HttpRequest* _request;
     nlohmann::json _json;
 };
 

@@ -2,7 +2,9 @@
 
 MINET_BEGIN
 
-JsonRequest::JsonRequest(const HttpRequest* request) : _request(request)
+HttpRequestWrapper::~HttpRequestWrapper() = default;
+
+JsonRequest::JsonRequest(const HttpRequest* request) : HttpRequestWrapper(request)
 {
     _json = nlohmann::json::parse(request->Body, nullptr, false, true);
 }

@@ -2,11 +2,13 @@
 
 MINET_BEGIN
 
-TextResponse::TextResponse(HttpResponse* response) : _response(response)
+HttpResponseWrapper::~HttpResponseWrapper() = default;
+
+TextResponse::TextResponse(HttpResponse* response) : HttpResponseWrapper(response)
 {
 }
 
-JsonResponse::JsonResponse(HttpResponse* response) : _response(response)
+JsonResponse::JsonResponse(HttpResponse* response) : HttpResponseWrapper(response)
 {
 }
 

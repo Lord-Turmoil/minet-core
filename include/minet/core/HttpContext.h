@@ -24,6 +24,8 @@ enum class HttpMethod
     ANY, // a wildcard, used for dispatcher
 };
 
+const char* HttpMethodToString(HttpMethod method);
+
 // FIXME: Request and response struct is not well aligned.
 
 struct HttpContext;
@@ -51,6 +53,8 @@ struct HttpRequest
     std::string Body;
 
     Ref<io::Stream> BodyStream;
+
+    std::string ToString() const;
 };
 
 struct HttpResponse
@@ -64,6 +68,8 @@ struct HttpResponse
     std::string Body;
 
     Ref<io::Stream> BodyStream;
+
+    std::string ToString() const;
 };
 
 struct HttpContext

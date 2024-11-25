@@ -76,9 +76,10 @@ private:
     int _Next();
     void _Rewind(char ch);
     void _NextToken();
+    void _NextString();
 
     void _ParsePreamble();
-    ParseStatus _ParsePrologue();
+    ParseStatus _ParseStartLine();
     ParseStatus _ParseHeader();
     ParseStatus _ParseBody();
 
@@ -98,9 +99,7 @@ int ParseHttpRequest(HttpRequest* request)
 
 int RequestParser::Parse()
 {
-    _NextToken();
-
-    if (_ParsePrologue() != ParseStatus::Ok)
+    if (_ParseStartLine() != ParseStatus::Ok)
     {
         return 2;
     }
@@ -152,7 +151,7 @@ void RequestParser::_Rewind(char ch)
 
 void RequestParser::_NextToken()
 {
-    static constexpr char delimiters[] = " \r\n";
+    static constexpr char delimiters[] = " :\r\n";
 
     int ch = _Next();
     if (ch == EOF)
@@ -205,15 +204,69 @@ void RequestParser::_NextToken()
     }
 }
 
+/**
+ * @note
+ * Since ':' can exists in header value, so we use this parse function
+ * to avoid stopping at ':'.
+ */
+void RequestParser::_NextString()
+{
+    static constexpr char delimiters[] = " \r\n";
+
+    int ch = _Next();
+    if (ch == EOF)
+    {
+        _currentToken.Type = RequestTokenType::End;
+        return;
+    }
+
+    while (ch == ' ')
+    {
+        ch = _Next();
+    }
+    if (ch == EOF)
+    {
+        _currentToken.Type = RequestTokenType::End;
+        return;
+    }
+
+    if (ch == '\r')
+    {
+        ch = _Next();
+        if (ch == '\n')
+        {
+            _currentToken.Type = RequestTokenType::NewLine;
+        }
+        else
+        {
+            _currentToken.Type = RequestTokenType::Invalid;
+        }
+        return;
+    }
+
+    _currentToken.Type = RequestTokenType::String;
+    _currentToken.Value.clear();
+    while ((ch != EOF) && (strchr(delimiters, ch) == nullptr))
+    {
+        _currentToken.Value.push_back(static_cast<char>(ch));
+        ch = _Next();
+    }
+    if (ch != EOF)
+    {
+        _Rewind(static_cast<char>(ch));
+    }
+}
+
 void RequestParser::_ParsePreamble()
 {
     _request->ContentLength = 0;
     _request->ContentType.clear();
 }
 
-RequestParser::ParseStatus RequestParser::_ParsePrologue()
+// StartLine := Method Path Version\r\n
+RequestParser::ParseStatus RequestParser::_ParseStartLine()
 {
-    // Method Path Version
+    _NextToken();
 
     // Method
     if (_currentToken.Type != RequestTokenType::String)
@@ -263,8 +316,11 @@ RequestParser::ParseStatus RequestParser::_ParsePrologue()
     return ParseStatus::Ok;
 }
 
+// Header := Key: Value\r\n
 RequestParser::ParseStatus RequestParser::_ParseHeader()
 {
+    _NextToken();
+
     // Key: Value
     if (_currentToken.Type != RequestTokenType::String)
     {
@@ -286,7 +342,7 @@ RequestParser::ParseStatus RequestParser::_ParseHeader()
     }
 
     // Value
-    _NextToken();
+    _NextString();
     if (_currentToken.Type != RequestTokenType::String)
     {
         return ParseStatus::Error;
