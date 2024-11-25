@@ -4,13 +4,13 @@
 
 # Build the project
 echo -e "\033[0;33mBuilding project...\033[0m"
-./scripts/build.sh >/dev/null
+./scripts/build.sh release >/dev/null
 if [ $? -ne 0 ]; then
     echo "Failed to build the project"
     exit 1
 fi
 
-BIN=./build/demo/minet-demo
+BIN=./build-release/demo/minet-demo
 ARGS=${1:-"demo/appsettings.jsonc"}
 if [ ! -f "$BIN" ]; then
     echo "Binary file not found: $BIN"
