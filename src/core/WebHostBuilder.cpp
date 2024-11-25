@@ -12,12 +12,25 @@ MINET_BEGIN
 
 static void _PrintBanner();
 
-WebHostBuilder::WebHostBuilder(std::string appSettingsPath)
-    : _appSettingsPath(std::move(appSettingsPath)), _container(mioc::ServiceContainer::New(true))
+WebHostBuilder::WebHostBuilder()
+    : _appSettingsPath("appsettings.json"), _container(mioc::ServiceContainer::New(true)), _initialized(false)
 {
     _PrintBanner();
-    _LoadSettings();
+}
+
+WebHostBuilder& WebHostBuilder::UseAppSettings(const std::string& path)
+{
+    if (_initialized)
+    {
+        std::cerr << "App settings can only be set once." << '\n';
+        exit(1);
+    }
+    _initialized = true;
+
+    _appSettingsPath = path;
     _InitializeComponents();
+
+    return *this;
 }
 
 WebHostBuilder& WebHostBuilder::Get(const std::string& path, const Ref<IRequestHandler>& handler)
@@ -35,11 +48,17 @@ WebHostBuilder& WebHostBuilder::Error(int statusCode, const Ref<IRequestHandler>
     return _RegisterErrorHandler(statusCode, handler);
 }
 
+Ref<Logger> WebHostBuilder::GetLogger(const std::string& name) const
+{
+    _Preamble();
+    auto loggerFactory = GetServiceContainer()->Resolve<ILoggerFactory>();
+    MINET_ASSERT(loggerFactory);
+    return loggerFactory->GetLogger(name);
+}
+
 Ref<WebHost> WebHostBuilder::Build()
 {
-    // Get logger.
-    Ref<ILoggerFactory> loggerFactory = _container->Resolve<ILoggerFactory>();
-    MINET_ASSERT(loggerFactory);
+    _Preamble();
 
     // Create request dispatcher.
     Ref<IRequestDispatcher> dispatcher = _container->Resolve<IRequestDispatcher>();
@@ -48,11 +67,11 @@ Ref<WebHost> WebHostBuilder::Build()
     // Get server.
     Ref<IServer> server = _container->Resolve<IServer>();
     MINET_ASSERT(server);
-    server->SetLogger(loggerFactory->GetLogger("Server"));
+    server->SetLogger(GetLogger("Server"));
 
     // Build Web host.
     Ref<WebHost> host = CreateRef<WebHost>(new WebHost(server, dispatcher, _container));
-    host->SetLogger(loggerFactory->GetLogger("WebHost"));
+    host->SetLogger(GetLogger("WebHost"));
 
     return host;
 }
@@ -60,12 +79,14 @@ Ref<WebHost> WebHostBuilder::Build()
 WebHostBuilder& WebHostBuilder::_RegisterHandler(const std::string& path, HttpMethod method,
                                                  const Ref<IRequestHandler>& handler)
 {
+    _Preamble();
     _container->Resolve<IRequestDispatcher>()->RegisterHandler(path, method, handler);
     return *this;
 }
 
 WebHostBuilder& WebHostBuilder::_RegisterErrorHandler(int statusCode, const Ref<IRequestHandler>& handler)
 {
+    _Preamble();
     _container->Resolve<IRequestDispatcher>()->RegisterErrorHandler(statusCode, handler);
     return *this;
 }
@@ -173,14 +194,23 @@ void WebHostBuilder::_LoadLoggingSettings(const nlohmann::json& config)
 void WebHostBuilder::_InitializeComponents()
 {
     // Some components are added when loading the settings.
+    _LoadSettings();
 
     _container->AddSingleton<ILoggerFactory, LoggerFactory, LoggerConfig>();
 
     // Since we will register handlers before build, we have to initialize
     // the dispatcher first.
-    auto loggerFactory = _container->Resolve<ILoggerFactory>();
     auto dispatcher = _container->Resolve<IRequestDispatcher>();
-    dispatcher->SetLogger(loggerFactory->GetLogger("RequestDispatcher"));
+    dispatcher->SetLogger(GetLogger("RequestDispatcher"));
+}
+
+void WebHostBuilder::_Preamble() const
+{
+    if (!_initialized)
+    {
+        std::cerr << "WebHostBuilder not intialized, call UseAppSettings() first." << '\n';
+        exit(2);
+    }
 }
 
 /**
@@ -200,9 +230,9 @@ void _PrintBanner()
    ____ ___  (_)___  ___  / /_    _________  ________ 
   / __ `__ \/ / __ \/ _ \/ __/   / ___/ __ \/ ___/ _ \
  / / / / / / / / / /  __/ /_    / /__/ /_/ / /  /  __/
-/_/ /_/ /_/_/_/ /_/\___/\__/    \___/\____/_/   \___/
+/_/ /_/ /_/_/_/ /_/\___/\__/    \___/\____/_/   \___/ 
 ------------------------------------------------------
-  A C++ HTTP server framework mimicking ASP.NET Core
+   A C++ HTTP server library mimicking ASP.NET Core   
 )";
     std::cout << banner << '\n';
 }

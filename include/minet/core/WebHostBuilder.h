@@ -21,13 +21,15 @@ class WebHost;
 class WebHostBuilder final
 {
 public:
-    WebHostBuilder(std::string appSettingsPath = "appsettings.json");
+    WebHostBuilder();
 
 public:
     /**
-     * @brief Register a handler for the given path.
-     * @see @link RequestDispatcher::Register.
+     * @warning
+     * This must be called before any other methods, and it should only be
+     * called once.
      */
+    WebHostBuilder& UseAppSettings(const std::string& path = "");
 
     WebHostBuilder& Get(const std::string& path, const Ref<IRequestHandler>& handler);
     WebHostBuilder& Post(const std::string& path, const Ref<IRequestHandler>& handler);
@@ -43,6 +45,13 @@ public:
         return _container;
     }
 
+    const nlohmann::json& GetConfig() const
+    {
+        return _config;
+    }
+
+    Ref<Logger> GetLogger(const std::string& name) const;
+
     /**
      * Build the web host.
      */
@@ -56,6 +65,11 @@ private:
     void _LoadServerSettings(const nlohmann::json& config);
     void _LoadLoggingSettings(const nlohmann::json& config);
     void _InitializeComponents();
+
+    /**
+     * Check if initialiezd.
+     */
+    void _Preamble() const;
 
 private:
     /**
@@ -72,6 +86,8 @@ private:
      * The IOC container with all pluggable services.
      */
     Ref<mioc::ServiceContainer> _container;
+
+    bool _initialized;
 };
 
 MINET_END

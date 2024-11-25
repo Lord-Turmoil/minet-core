@@ -24,6 +24,3 @@ cmake .. $flag
 
 # build the project
 make -j $(nproc)
-
-# exit profile directory
-cd ..
