@@ -54,6 +54,10 @@ std::string HttpRequest::ToString() const
     {
         ss << "Content-Length" << http::entities::COLON << ContentLength << http::entities::NEW_LINE;
     }
+    if (!Host.empty())
+    {
+        ss << "Host" << http::entities::COLON << Host << http::entities::NEW_LINE;
+    }
     for (const auto& header : Headers)
     {
         ss << header.first << http::entities::COLON << header.second << http::entities::NEW_LINE;

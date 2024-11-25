@@ -1,5 +1,6 @@
 #pragma once
 
+#include <vector>
 #include "minet/common/Base.h"
 
 MINET_BEGIN
@@ -40,6 +41,35 @@ public:
 
 private:
     int _fd;
+};
+
+/**
+ * @brief Buffer stream.
+ */
+class BufferInputStream final : public Stream
+{
+public:
+    BufferInputStream(const char* buffer, size_t length);
+    ~BufferInputStream() override = default;
+
+    bool IsReadable() const override
+    {
+        return true;
+    }
+    bool IsWritable() const override
+    {
+        return false;
+    }
+
+    ssize_t Read(char* buffer, size_t length) override;
+    ssize_t Write(const char* buffer, size_t length) override
+    {
+        return -1;
+    }
+
+private:
+    std::vector<char> _buffer;
+    size_t _offset = 0;
 };
 
 } // namespace io

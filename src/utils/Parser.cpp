@@ -363,6 +363,10 @@ RequestParser::ParseStatus RequestParser::_ParseHeader()
     {
         _request->ContentLength = std::stoi(_currentToken.Value);
     }
+    else if (key == "Host")
+    {
+        _request->Host = _currentToken.Value;
+    }
     else
     {
         _request->Headers[key] = _currentToken.Value;

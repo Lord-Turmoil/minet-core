@@ -11,3 +11,10 @@
 #include <minet/components/RequestHandler.h>
 #include <minet/components/Requests.h>
 #include <minet/components/Responses.h>
+
+#include <minet/io/Stream.h>
+#include <minet/io/StreamReader.h>
+#include <minet/io/StreamWriter.h>
+
+#include <minet/utils/Http.h>
+#include <minet/utils/Parser.h>

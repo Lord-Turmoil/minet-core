@@ -1,8 +1,9 @@
-set(TEST_BINARY "minet-tests")
+set(LIBRARIES minetcore)
+set(MINET_TESTS ParserTest WrapperTest)
 
-aux_source_directory(. TEST_FILES)
-add_executable(${TEST_BINARY} ${TEST_FILES})
-target_include_directories(${TEST_BINARY} PRIVATE .)
-target_link_libraries(${TEST_BINARY} minetcore)
-
-add_test(NAME TestAll COMMAND tests)
+foreach(test ${MINET_TESTS})
+    add_executable(${test} doctest.cpp ${test}.cpp)
+    target_include_directories(${test} PRIVATE .)
+    target_link_libraries(${test} ${LIBRARIES})
+    add_test(NAME ${test} COMMAND ${test})
+endforeach(test ${MINET_TESTS})
