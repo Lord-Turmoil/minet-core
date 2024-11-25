@@ -2,51 +2,25 @@
 
 #include "minet/core/HttpContext.h"
 #include "minet/utils/Http.h"
+#include "minet/utils/Network.h"
 #include "minet/utils/Parser.h"
 
 MINET_BEGIN
 
-const char* HttpMethodToString(HttpMethod method)
-{
-    switch (method)
-    {
-    case HttpMethod::GET:
-        return "GET";
-    case HttpMethod::POST:
-        return "POST";
-    case HttpMethod::PUT:
-        return "PUT";
-    case HttpMethod::DELETE:
-        return "DELETE";
-    case HttpMethod::HEAD:
-        return "HEAD";
-    case HttpMethod::OPTIONS:
-        return "OPTIONS";
-    case HttpMethod::TRACE:
-        return "TRACE";
-    case HttpMethod::PATCH:
-        return "PATCH";
-    case HttpMethod::ANY:
-        return "*";
-    }
-
-    return "UNKNOWN";
-}
-
-int CreateHttpContext(const utils::network::AcceptData& data, Ref<HttpContext>* context)
+int CreateHttpContext(const network::AcceptData& data, Ref<HttpContext>* context)
 {
     Ref<HttpContext> ctx = CreateRef<HttpContext>();
     Ref<io::Stream> stream = CreateRef<io::SocketStream>(data.SocketFd);
 
     ctx->_socketFd = data.SocketFd;
 
-    ctx->Request.Host = utils::http::AddressToHost(data.Address.sin_addr.s_addr, data.Address.sin_port);
+    ctx->Request.Host = network::AddressToHost(data.Address.sin_addr.s_addr, data.Address.sin_port);
     ctx->Request.BodyStream = stream;
 
     ctx->Response.StatusCode = 200;
     ctx->Response.BodyStream = stream;
 
-    int ret = utils::http::ParseHttpRequest(&ctx->Request);
+    int ret = http::ParseHttpRequest(&ctx->Request);
     if (ret == 0)
     {
         *context = ctx;
@@ -59,7 +33,7 @@ int DestroyHttpContext(const Ref<HttpContext>& context)
 {
     if (context->_socketFd > 0)
     {
-        return utils::network::CloseSocket(context->_socketFd);
+        return network::CloseSocket(context->_socketFd);
     }
     return 0;
 }
@@ -68,7 +42,7 @@ std::string HttpRequest::ToString() const
 {
     std::stringstream ss;
 
-    ss << HttpMethodToString(Method) << http::entities::SPACE;
+    ss << http::HttpMethodToString(Method) << http::entities::SPACE;
     ss << Path << http::entities::SPACE;
     ss << http::entities::HTTP_VERSION << http::entities::NEW_LINE;
 

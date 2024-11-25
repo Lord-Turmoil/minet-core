@@ -4,27 +4,10 @@
 #include <unordered_map>
 #include "minet/common/Base.h"
 #include "minet/io/Stream.h"
+#include "minet/utils/Http.h"
 #include "minet/utils/Network.h"
 
 MINET_BEGIN
-
-/*
- * This part mimics the HTTP context in ASP.NET Core.
- */
-enum class HttpMethod
-{
-    GET,
-    POST,
-    PUT,
-    DELETE,
-    HEAD,
-    OPTIONS,
-    TRACE,
-    PATCH,
-    ANY, // a wildcard, used for dispatcher
-};
-
-const char* HttpMethodToString(HttpMethod method);
 
 // FIXME: Request and response struct is not well aligned.
 
@@ -32,7 +15,7 @@ struct HttpContext;
 
 struct HttpRequest
 {
-    HttpMethod Method;
+    http::HttpMethod Method;
 
     /**
      * @brief The host of the request, may include port.
@@ -80,7 +63,7 @@ struct HttpContext
 private:
     // This is ugly. But I cannot think of other ways to hold the
     // original socket fd in order to close it.
-    friend int CreateHttpContext(const utils::network::AcceptData& data, Ref<HttpContext>* context);
+    friend int CreateHttpContext(const network::AcceptData& data, Ref<HttpContext>* context);
     friend int DestroyHttpContext(const Ref<HttpContext>& context);
     int _socketFd;
 };
@@ -91,7 +74,7 @@ private:
  * @param context Output new HTTP context.
  * @return 0 on success, otherwise, see @link ParseHttpRequest.
  */
-int CreateHttpContext(const utils::network::AcceptData& data, Ref<HttpContext>* context);
+int CreateHttpContext(const network::AcceptData& data, Ref<HttpContext>* context);
 
 /**
  * @brief Destroy a HTTP context after handling.

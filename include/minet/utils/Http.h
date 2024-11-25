@@ -1,3 +1,5 @@
+#pragma once
+
 #include "minet/common/Base.h"
 
 MINET_BEGIN
@@ -28,6 +30,26 @@ constexpr char CONTENT_TYPE[]       = "Content-Type";
 constexpr char CONTENT_LENGTH[]     = "Content-Length";
 // clang-format on
 } // namespace entities
+
+/*
+ * This part mimics the HTTP context in ASP.NET Core.
+ */
+enum class HttpMethod
+{
+    GET,
+    POST,
+    PUT,
+    DELETE,
+    HEAD,
+    OPTIONS,
+    TRACE,
+    PATCH
+};
+
+/**
+ * @brief Get corresponding string representation of HTTP method.
+ */
+const char* HttpMethodToString(HttpMethod method);
 
 /**
  * @brief Get corresponding description of HTTP status codes.

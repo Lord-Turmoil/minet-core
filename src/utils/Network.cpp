@@ -12,7 +12,7 @@
 
 MINET_BEGIN
 
-namespace utils::network
+namespace network
 {
 
 int OpenSocket(uint16_t port, bool block)
@@ -86,6 +86,18 @@ ssize_t WriteSocket(int fd, const char* buffer, size_t length)
     return send(fd, buffer, length, 0);
 }
 
-} // namespace utils::network
+std::string AddressToHost(uint32_t address, uint16_t port)
+{
+    address = htonl(address);
+    std::string host = std::to_string((address >> 24) & 0xFF) + "." + std::to_string((address >> 16) & 0xFF) + "." +
+                       std::to_string((address >> 8) & 0xFF) + "." + std::to_string(address & 0xFF);
+    if ((port != 0) && (port != 80))
+    {
+        host += ":" + std::to_string(port);
+    }
+    return host;
+}
+
+} // namespace network
 
 MINET_END

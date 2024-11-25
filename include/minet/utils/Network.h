@@ -5,7 +5,7 @@
 
 MINET_BEGIN
 
-namespace utils::network
+namespace network
 {
 
 struct AcceptData
@@ -68,6 +68,14 @@ ssize_t ReadSocket(int fd, char* buffer, size_t length);
  */
 ssize_t WriteSocket(int fd, const char* buffer, size_t length);
 
-} // namespace utils::network
+/**
+ * @brief Convert integer address to IP string.
+ * @param address The integer address.
+ * @param port The port.
+ * @note If port is 0 or 80, will be ignored.
+ */
+std::string AddressToHost(uint32_t address, uint16_t port);
+
+} // namespace network
 
 MINET_END

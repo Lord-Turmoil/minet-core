@@ -29,7 +29,7 @@ ssize_t SocketStream::Read(char* buffer, size_t length)
         return -1;
     }
 
-    return utils::network::ReadSocket(_fd, buffer, length);
+    return network::ReadSocket(_fd, buffer, length);
 }
 
 ssize_t SocketStream::Write(const char* buffer, size_t length)
@@ -39,7 +39,7 @@ ssize_t SocketStream::Write(const char* buffer, size_t length)
         return -1;
     }
 
-    return utils::network::WriteSocket(_fd, buffer, length);
+    return network::WriteSocket(_fd, buffer, length);
 }
 
 } // namespace io

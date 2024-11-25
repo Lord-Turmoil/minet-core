@@ -7,7 +7,7 @@ MINET_BEGIN
 
 struct HttpRequest;
 
-namespace utils::http
+namespace http
 {
 
 /**
@@ -16,14 +16,6 @@ namespace utils::http
  * e.g. "abc" -> "/abc", "abc/" -> "/abc", "/abc" -> "/abc", "/abc/" -> "/abc"
  */
 std::string CleanPath(const std::string& path);
-
-/**
- * @brief Convert integer address to IP string.
- * @param address The integer address.
- * @param port The port.
- * @note If port is 0 or 80, will be ignored.
- */
-std::string AddressToHost(uint32_t address, uint16_t port);
 
 /**
  * @brief Parse HTTP request.
@@ -35,6 +27,6 @@ std::string AddressToHost(uint32_t address, uint16_t port);
  */
 int ParseHttpRequest(HttpRequest* request);
 
-} // namespace utils::http
+} // namespace http
 
 MINET_END

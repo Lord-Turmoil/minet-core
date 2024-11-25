@@ -3,6 +3,7 @@
 #include <unordered_map>
 #include "minet/common/Base.h"
 #include "minet/core/HttpContext.h"
+#include "minet/utils/Http.h"
 
 MINET_BEGIN
 
@@ -29,7 +30,7 @@ public:
      * If a handler is already registered for the given path, it will
      * be replaced by the new handler.
      */
-    void RegisterHandler(const std::string& path, HttpMethod method, const Ref<IRequestHandler>& handler);
+    void RegisterHandler(const std::string& path, http::HttpMethod method, const Ref<IRequestHandler>& handler);
 
     void RegisterErrorHandler(int statusCode, const Ref<IRequestHandler>& handler);
 
@@ -54,13 +55,8 @@ protected:
     Ref<Logger> _logger;
 
 private:
-    struct RequestHandlerRegistration
-    {
-        HttpMethod Method;
-        Ref<IRequestHandler> Handler;
-    };
-
-    std::unordered_map<std::string, RequestHandlerRegistration> _handlers;
+    using HandlerRegistry = std::unordered_map<std::string, std::unordered_map<http::HttpMethod, Ref<IRequestHandler>>>;
+    HandlerRegistry _handlers;
     std::unordered_map<int, Ref<IRequestHandler>> _errorHandlers;
 };
 

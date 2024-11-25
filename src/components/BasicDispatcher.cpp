@@ -56,10 +56,12 @@ void BasicDispatcher::_WriteResponse(const Ref<HttpContext>& context)
         writer.Write(NEW_LINE);
     }
 
+    // End of headers
+    writer.Write(NEW_LINE);
+
     // Body
     if (response.StatusCode != NO_CONTENT)
     {
-        writer.Write(NEW_LINE);
         writer.Write(response.Body);
     }
 }

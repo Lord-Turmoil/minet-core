@@ -35,12 +35,12 @@ WebHostBuilder& WebHostBuilder::UseAppSettings(const std::string& path)
 
 WebHostBuilder& WebHostBuilder::Get(const std::string& path, const Ref<IRequestHandler>& handler)
 {
-    return _RegisterHandler(path, HttpMethod::GET, handler);
+    return _RegisterHandler(path, http::HttpMethod::GET, handler);
 }
 
 WebHostBuilder& WebHostBuilder::Post(const std::string& path, const Ref<IRequestHandler>& handler)
 {
-    return _RegisterHandler(path, HttpMethod::POST, handler);
+    return _RegisterHandler(path, http::HttpMethod::POST, handler);
 }
 
 WebHostBuilder& WebHostBuilder::Error(int statusCode, const Ref<IRequestHandler>& handler)
@@ -76,7 +76,7 @@ Ref<WebHost> WebHostBuilder::Build()
     return host;
 }
 
-WebHostBuilder& WebHostBuilder::_RegisterHandler(const std::string& path, HttpMethod method,
+WebHostBuilder& WebHostBuilder::_RegisterHandler(const std::string& path, http::HttpMethod method,
                                                  const Ref<IRequestHandler>& handler)
 {
     _Preamble();

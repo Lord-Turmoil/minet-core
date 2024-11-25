@@ -2,10 +2,11 @@
 #include "minet/common/Assert.h"
 #include "minet/core/HttpContext.h"
 #include "minet/io/StreamReader.h"
+#include "minet/utils/Http.h"
 
 MINET_BEGIN
 
-namespace utils::http
+namespace http
 {
 
 std::string CleanPath(const std::string& path)
@@ -20,18 +21,6 @@ std::string CleanPath(const std::string& path)
         cleanedPath.pop_back();
     }
     return cleanedPath;
-}
-
-std::string AddressToHost(uint32_t address, uint16_t port)
-{
-    address = htonl(address);
-    std::string host = std::to_string((address >> 24) & 0xFF) + "." + std::to_string((address >> 16) & 0xFF) + "." +
-                       std::to_string((address >> 8) & 0xFF) + "." + std::to_string(address & 0xFF);
-    if ((port != 0) && (port != 80))
-    {
-        host += ":" + std::to_string(port);
-    }
-    return host;
 }
 
 /*
@@ -271,11 +260,11 @@ RequestParser::ParseStatus RequestParser::_ParseStartLine()
     }
     if (_currentToken.Value == "GET")
     {
-        _request->Method = HttpMethod::GET;
+        _request->Method = http::HttpMethod::GET;
     }
     else if (_currentToken.Value == "POST")
     {
-        _request->Method = HttpMethod::POST;
+        _request->Method = http::HttpMethod::POST;
     }
     else
     {
@@ -401,6 +390,6 @@ RequestParser::ParseStatus RequestParser::_ParseBody()
     return ParseStatus::Ok;
 }
 
-} // namespace utils::http
+} // namespace http
 
 MINET_END

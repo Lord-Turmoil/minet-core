@@ -66,7 +66,7 @@ void BasicServer::Stop()
 
 void BasicServer::_Serve()
 {
-    utils::network::AcceptData data;
+    network::AcceptData data;
     Ref<HttpContext> context;
     while (_isRunning)
     {
@@ -99,7 +99,7 @@ void BasicServer::_DecorateContext(const Ref<HttpContext>& context)
 
 void BasicServer::_OpenSocket()
 {
-    _listenFd = utils::network::OpenSocket(_config->Port);
+    _listenFd = network::OpenSocket(_config->Port);
     if (_listenFd < 0)
     {
         _logger->Error("Failed to open socket: {}", _listenFd);
@@ -113,7 +113,7 @@ void BasicServer::_CloseSocket()
         return;
     }
 
-    if (utils::network::CloseSocket(_listenFd) != 0)
+    if (network::CloseSocket(_listenFd) != 0)
     {
         _logger->Error("Failed to close socket");
     }

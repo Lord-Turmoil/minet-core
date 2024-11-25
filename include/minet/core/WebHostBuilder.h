@@ -58,7 +58,8 @@ public:
     Ref<WebHost> Build();
 
 private:
-    WebHostBuilder& _RegisterHandler(const std::string& path, HttpMethod method, const Ref<IRequestHandler>& handler);
+    WebHostBuilder& _RegisterHandler(const std::string& path, http::HttpMethod method,
+                                     const Ref<IRequestHandler>& handler);
     WebHostBuilder& _RegisterErrorHandler(int statusCode, const Ref<IRequestHandler>& handler);
 
     void _LoadSettings();

@@ -5,6 +5,31 @@ MINET_BEGIN
 namespace http
 {
 
+const char* HttpMethodToString(HttpMethod method)
+{
+    switch (method)
+    {
+    case HttpMethod::GET:
+        return "GET";
+    case HttpMethod::POST:
+        return "POST";
+    case HttpMethod::PUT:
+        return "PUT";
+    case HttpMethod::DELETE:
+        return "DELETE";
+    case HttpMethod::HEAD:
+        return "HEAD";
+    case HttpMethod::OPTIONS:
+        return "OPTIONS";
+    case HttpMethod::TRACE:
+        return "TRACE";
+    case HttpMethod::PATCH:
+        return "PATCH";
+    }
+
+    return "UNKNOWN";
+}
+
 const char* StatusCodeToDescription(int statusCode)
 {
     using namespace status;

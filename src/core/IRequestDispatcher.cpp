@@ -12,17 +12,23 @@ IRequestDispatcher::IRequestDispatcher() : _logger(ILoggerFactory::GetDummyLogge
 {
 }
 
-void IRequestDispatcher::RegisterHandler(const std::string& path, HttpMethod method,
+void IRequestDispatcher::RegisterHandler(const std::string& path, http::HttpMethod method,
                                          const Ref<IRequestHandler>& handler)
 {
-    std::string cleanedPath = utils::http::CleanPath(path);
-    if (_handlers.find(cleanedPath) != _handlers.end())
+    std::string cleanedPath = http::CleanPath(path);
+    auto pathIt = _handlers.find(cleanedPath);
+    if (pathIt != _handlers.end())
     {
-        _logger->Warn("Handler for path '{}' is already registered, replacing it with the new one", cleanedPath);
+        auto headerIt = pathIt->second.find(method);
+        if (headerIt != pathIt->second.end())
+        {
+            _logger->Warn("Handler for '{} {}' already registered", http::HttpMethodToString(method), cleanedPath);
+            return;
+        }
     }
-    // use [] to insert or update
-    _handlers[utils::http::CleanPath(path)] = { method, handler };
-    _logger->Debug("Registered handler for path '{}'", cleanedPath);
+
+    _handlers[cleanedPath][method] = handler;
+    _logger->Debug("Registered handler for '{} {}'", http::HttpMethodToString(method), cleanedPath);
 }
 
 void IRequestDispatcher::RegisterErrorHandler(int statusCode, const Ref<IRequestHandler>& handler)
@@ -38,18 +44,19 @@ void IRequestDispatcher::Dispatch(const Ref<HttpContext>& context)
 {
     MINET_ASSERT(context);
 
-    std::string path = utils::http::CleanPath(context->Request.Path);
+    std::string path = http::CleanPath(context->Request.Path);
     _logger->Debug("Dispatching request {}", path);
 
     // Find handler for the path and method.
-    auto it = _handlers.find(path);
+    auto pathIt = _handlers.find(path);
     Ref<IRequestHandler> handler;
     int statusCode = http::status::OK;
-    if (it != _handlers.end())
+    if (pathIt != _handlers.end())
     {
-        if ((it->second.Method == context->Request.Method) || (it->second.Method == HttpMethod::ANY))
+        auto methodId = pathIt->second.find(context->Request.Method);
+        if (methodId != pathIt->second.end())
         {
-            handler = it->second.Handler;
+            handler = methodId->second;
         }
         else
         {
