@@ -43,10 +43,11 @@ std::string AddressToHost(uint32_t address, uint16_t port)
 enum class RequestTokenType : uint8_t
 {
     Invalid,
-    String,
-    Colon,
-    NewLine,
-    End
+    String,  // [^ :\r\n]+
+    Space,   // ' '
+    Colon,   // ':'
+    NewLine, // '\r\n'
+    End      // EOF
 };
 
 struct RequestToken
@@ -160,20 +161,15 @@ void RequestParser::_NextToken()
         return;
     }
 
-    while (ch == ' ')
+    if (ch == ' ')
     {
-        ch = _Next();
-    }
-    if (ch == EOF)
-    {
-        _currentToken.Type = RequestTokenType::End;
+        _currentToken.Type = RequestTokenType::Space;
         return;
     }
 
     if (ch == ':')
     {
         _currentToken.Type = RequestTokenType::Colon;
-        // value is ignored
         return;
     }
 
@@ -211,7 +207,7 @@ void RequestParser::_NextToken()
  */
 void RequestParser::_NextString()
 {
-    static constexpr char delimiters[] = " \r\n";
+    static constexpr char delimiters[] = "\r\n";
 
     int ch = _Next();
     if (ch == EOF)
@@ -263,7 +259,7 @@ void RequestParser::_ParsePreamble()
     _request->ContentType.clear();
 }
 
-// StartLine := Method Path Version\r\n
+// StartLine := Method Space Path Space Version\r\n
 RequestParser::ParseStatus RequestParser::_ParseStartLine()
 {
     _NextToken();
@@ -287,6 +283,13 @@ RequestParser::ParseStatus RequestParser::_ParseStartLine()
         return ParseStatus::Error;
     }
 
+    // Space
+    _NextToken();
+    if (_currentToken.Type != RequestTokenType::Space)
+    {
+        return ParseStatus::Error;
+    }
+
     // Path
     _NextToken();
     if (_currentToken.Type != RequestTokenType::String)
@@ -294,6 +297,13 @@ RequestParser::ParseStatus RequestParser::_ParseStartLine()
         return ParseStatus::Error;
     }
     _request->Path = CleanPath(_currentToken.Value);
+
+    // Space
+    _NextToken();
+    if (_currentToken.Type != RequestTokenType::Space)
+    {
+        return ParseStatus::Error;
+    }
 
     // Version
     _NextToken();
@@ -307,6 +317,7 @@ RequestParser::ParseStatus RequestParser::_ParseStartLine()
         return ParseStatus::Error;
     }
 
+    // NewLine
     _NextToken();
     if (_currentToken.Type != RequestTokenType::NewLine)
     {
@@ -316,12 +327,11 @@ RequestParser::ParseStatus RequestParser::_ParseStartLine()
     return ParseStatus::Ok;
 }
 
-// Header := Key: Value\r\n
+// Header := Key Colon Space Value\r\n
 RequestParser::ParseStatus RequestParser::_ParseHeader()
 {
+    // Key
     _NextToken();
-
-    // Key: Value
     if (_currentToken.Type != RequestTokenType::String)
     {
         // The last header is followed by a new line, so it's ok
@@ -334,14 +344,21 @@ RequestParser::ParseStatus RequestParser::_ParseHeader()
     }
     std::string key = _currentToken.Value;
 
-    // :
+    // Colon
     _NextToken();
     if (_currentToken.Type != RequestTokenType::Colon)
     {
         return ParseStatus::Error;
     }
 
-    // Value
+    // Space
+    _NextToken();
+    if (_currentToken.Type != RequestTokenType::Space)
+    {
+        return ParseStatus::Error;
+    }
+
+    // Value (may contain space and colon)
     _NextString();
     if (_currentToken.Type != RequestTokenType::String)
     {
