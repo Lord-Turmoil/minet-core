@@ -45,7 +45,9 @@ template <typename TRequest = TextRequest, typename TResponse = TextResponse>
 class RequestHandler final : public IRequestHandler
 {
 public:
-    explicit RequestHandler(const std::function<void(const TRequest&, TResponse&)>& handler) : _handler(handler)
+    using RequestHandlerFn = std::function<void(const TRequest&, TResponse&)>;
+
+    explicit RequestHandler(RequestHandlerFn handler) : _handler(std::move(handler))
     {
     }
 
@@ -65,13 +67,13 @@ public:
         return http::status::OK;
     }
 
-    static Ref<IRequestHandler> Bind(const std::function<void(const TRequest&, TResponse&)>& handler)
+    static Ref<IRequestHandler> Bind(RequestHandlerFn handler)
     {
-        return CreateRef<RequestHandler>(handler);
+        return CreateRef<RequestHandler>(std::move(handler));
     }
 
 private:
-    std::function<void(const TRequest&, TResponse&)> _handler;
+    RequestHandlerFn _handler;
 };
 
 /*

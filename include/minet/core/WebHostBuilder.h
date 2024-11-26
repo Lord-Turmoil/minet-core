@@ -45,7 +45,7 @@ public:
         return _container;
     }
 
-    const nlohmann::json& GetConfig() const
+    const nlohmann::json& GetAppSettings() const
     {
         return _config;
     }

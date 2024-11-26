@@ -15,6 +15,31 @@ public:
 
     virtual ~HttpRequestWrapper() = 0;
 
+    http::HttpMethod Method() const
+    {
+        return _request->Method;
+    }
+
+    const std::string& Host() const
+    {
+        return _request->Host;
+    }
+
+    const std::string& Path() const
+    {
+        return _request->Path;
+    }
+
+    const std::string& ContentType() const
+    {
+        return _request->ContentType;
+    }
+
+    const HeaderCollection& Headers() const
+    {
+        return _request->Headers;
+    }
+
     const HttpRequest& Request() const
     {
         return *_request;

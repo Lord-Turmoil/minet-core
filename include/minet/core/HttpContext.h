@@ -13,28 +13,49 @@ MINET_BEGIN
 
 struct HttpContext;
 
+using HeaderCollection = std::unordered_map<std::string, std::string>;
+
 struct HttpRequest
 {
     http::HttpMethod Method;
 
     /**
-     * @brief The host of the request, may include port.
-     * @note
-     * e.g. www.example.com, localhost:8080
+     * @brief The content length.
+     * @note If is 0, will be omitted in the header.
      */
-    std::string Host;
+    int ContentLength;
 
     /**
      * @brief The request path, should starts with '/' and not end with '/'.
      */
     std::string Path;
 
-    std::unordered_map<std::string, std::string> Headers;
-    int ContentLength;
+    /**
+     * @brief The host of the request, may include port.
+     * @note It is part of the header, but not included in Headers.
+     * @note
+     * e.g. www.example.com, localhost:8080
+     */
+    std::string Host;
+
+    /**
+     * @brief The content type of the request.
+     * @note It is part of the header, but not included in Headers.
+     */
     std::string ContentType;
 
+    /**
+     * @brief All headers.
+     * @warning For now doesn't support multiple headers with the same key.
+     */
+    HeaderCollection Headers;
+
+    /**
+     * @brief The request body.
+     */
     std::string Body;
 
+    // Before parsing, request only have BodyStream valid.
     Ref<io::Stream> BodyStream;
 
     std::string ToString() const;
@@ -42,14 +63,39 @@ struct HttpRequest
 
 struct HttpResponse
 {
+    /**
+     * @brief The response status code.
+     */
     int StatusCode;
 
-    std::unordered_map<std::string, std::string> Headers;
+    /**
+     * @brief Length of the response body.
+     * @note If is 0, will be omitted in the header.
+     * @warning This is auto-generated, don't try to modify it.
+     */
     int ContentLength;
+
+    /**
+     * @brief Response content type.
+     * @note It is part of the header, but not included in Headers.
+     * @warning This is auto-generated, don't try to modify it.
+     */
     std::string ContentType;
 
+    /**
+     * @brief Collection of all headers.
+     * @warning For now doesn't support multiple headers with the same key.
+     */
+    HeaderCollection Headers;
+
+    /**
+     * @brief Response body.
+     */
     std::string Body;
 
+    /**
+     * @brief Used to write response back to the client.
+     */
     Ref<io::Stream> BodyStream;
 
     std::string ToString() const;

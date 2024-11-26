@@ -208,7 +208,7 @@ void WebHostBuilder::_Preamble() const
 {
     if (!_initialized)
     {
-        std::cerr << "WebHostBuilder not intialized, call UseAppSettings() first." << '\n';
+        std::cerr << "WebHostBuilder not initialized, call UseAppSettings() first." << '\n';
         exit(2);
     }
 }

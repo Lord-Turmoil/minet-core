@@ -15,7 +15,17 @@ public:
 
     virtual ~HttpResponseWrapper() = 0;
 
-    HttpResponse& Response() const
+    void SetStatusCode(int code)
+    {
+        _response->StatusCode = code;
+    }
+
+    HeaderCollection& Headers()
+    {
+        return _response->Headers;
+    }
+
+    HttpResponse& Response()
     {
         return *_response;
     }
@@ -38,7 +48,7 @@ public:
     explicit TextResponse(HttpResponse* response);
     ~TextResponse() override = default;
 
-    std::string& Text() const
+    std::string& Text()
     {
         return _response->Body;
     }
