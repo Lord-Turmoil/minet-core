@@ -1,3 +1,5 @@
+#pragma once
+
 #include <csignal>
 #include <functional>
 #include "minet/common/Base.h"

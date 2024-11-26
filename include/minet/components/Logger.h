@@ -14,7 +14,7 @@ class Logger
     friend class ILoggerFactory;
 
 public:
-    Logger(const LoggerSpecification& config);
+    explicit Logger(const LoggerSpecification& config);
     ~Logger();
 
 public:

@@ -6,10 +6,10 @@
 
 MINET_BEGIN
 
-class LoggerFactory : public ILoggerFactory
+class LoggerFactory final : public ILoggerFactory
 {
 public:
-    LoggerFactory(const Ref<LoggerConfig>& config);
+    explicit LoggerFactory(const Ref<LoggerConfig>& config);
     ~LoggerFactory() override = default;
 
     Ref<Logger> GetLogger(const std::string& name) override;

@@ -9,7 +9,7 @@ MINET_BEGIN
 class HttpResponseWrapper
 {
 public:
-    HttpResponseWrapper(HttpResponse* response) : _response(response)
+    explicit HttpResponseWrapper(HttpResponse* response) : _response(response)
     {
     }
 
@@ -32,10 +32,11 @@ protected:
 /**
  * @brief Wrapper for text response.
  */
-class TextResponse : public HttpResponseWrapper
+class TextResponse final : public HttpResponseWrapper
 {
 public:
-    TextResponse(HttpResponse* response);
+    explicit TextResponse(HttpResponse* response);
+    ~TextResponse() override = default;
 
     std::string& Text() const
     {
@@ -47,10 +48,11 @@ public:
  * @brief Wrapper for JSON response.
  * @warning Do not modify the original body in the response.
  */
-class JsonResponse : public HttpResponseWrapper
+class JsonResponse final : public HttpResponseWrapper
 {
 public:
-    JsonResponse(HttpResponse* response);
+    explicit JsonResponse(HttpResponse* response);
+    ~JsonResponse() override = default;
 
     nlohmann::json& Json()
     {

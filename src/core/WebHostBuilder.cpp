@@ -225,16 +225,32 @@ void _PrintBanner()
         return;
     }
 
-    static const char* banner = R"(
+    static const char* const HEADER = R"(
               _            __                         
    ____ ___  (_)___  ___  / /_    _________  ________ 
   / __ `__ \/ / __ \/ _ \/ __/   / ___/ __ \/ ___/ _ \
  / / / / / / / / / /  __/ /_    / /__/ /_/ / /  /  __/
-/_/ /_/ /_/_/_/ /_/\___/\__/    \___/\____/_/   \___/ 
+/_/ /_/ /_/_/_/ /_/\___/\__/    \___/\____/_/   \___/ )";
+    static const char* const FOOTER = R"(
 ------------------------------------------------------
-   A C++ HTTP server library mimicking ASP.NET Core   
-)";
-    std::cout << banner << '\n';
+   A C++ HTTP server library mimicking ASP.NET Core   )";
+    static const int WIDTH = 54;
+
+    std::cout << HEADER << '\n';
+    int versionWidth = static_cast<int>(strlen(Version) + 1);
+    int paddingLeft = (WIDTH /* width or the header */ - versionWidth) / 2;
+    int paddingRight = WIDTH - versionWidth - paddingLeft;
+    for (int i = 0; i < paddingLeft; ++i)
+    {
+        std::cout << ' ';
+    }
+    std::cout << 'v' << Version;
+    for (int i = 0; i < paddingRight; ++i)
+    {
+        std::cout << ' ';
+    }
+    std::cout << FOOTER << '\n';
+    printed = true;
 }
 
 MINET_END

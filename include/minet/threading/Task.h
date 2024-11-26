@@ -14,7 +14,7 @@ public:
     /**
      * @brief Create a task with the given thread.
      */
-    Task(Ref<Thread> thread);
+    explicit Task(Ref<Thread> thread);
 
     /**
      * @brief Start the task asynchronously.
@@ -52,7 +52,7 @@ public:
 
 private:
     /**
-     * @brief Create a empty task.
+     * @brief Create an empty task.
      * This task is not runnable, and represents a completed task in case
      * placeholder is required.
      */

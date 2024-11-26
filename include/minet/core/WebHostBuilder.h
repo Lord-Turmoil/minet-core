@@ -68,7 +68,7 @@ private:
     void _InitializeComponents();
 
     /**
-     * Check if initialiezd.
+     * Check if initialized.
      */
     void _Preamble() const;
 

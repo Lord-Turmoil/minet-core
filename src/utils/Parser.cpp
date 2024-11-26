@@ -260,11 +260,11 @@ RequestParser::ParseStatus RequestParser::_ParseStartLine()
     }
     if (_currentToken.Value == "GET")
     {
-        _request->Method = http::HttpMethod::GET;
+        _request->Method = HttpMethod::GET;
     }
     else if (_currentToken.Value == "POST")
     {
-        _request->Method = http::HttpMethod::POST;
+        _request->Method = HttpMethod::POST;
     }
     else
     {
@@ -383,7 +383,6 @@ RequestParser::ParseStatus RequestParser::_ParseHeader()
 
 RequestParser::ParseStatus RequestParser::_ParseBody()
 {
-    // FIXME: I'm not sure if I can use std::string::data like this.
     int length = _request->ContentLength;
     _request->Body.resize(length);
     ssize_t size = _reader->Read(_request->Body.data(), length);

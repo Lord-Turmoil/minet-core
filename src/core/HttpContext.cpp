@@ -42,7 +42,7 @@ std::string HttpRequest::ToString() const
 {
     std::stringstream ss;
 
-    ss << http::HttpMethodToString(Method) << http::entities::SPACE;
+    ss << HttpMethodToString(Method) << http::entities::SPACE;
     ss << Path << http::entities::SPACE;
     ss << http::entities::HTTP_VERSION << http::entities::NEW_LINE;
 

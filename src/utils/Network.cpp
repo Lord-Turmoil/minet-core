@@ -1,7 +1,4 @@
-#include "minet/utils/Network.h"
-
 #include <arpa/inet.h>
-#include <cstring>
 #include <fcntl.h>
 #include <netinet/in.h>
 #include <netinet/tcp.h>
@@ -9,6 +6,7 @@
 #include <unistd.h>
 
 #include "minet/common/Assert.h"
+#include "minet/utils/Network.h"
 
 MINET_BEGIN
 

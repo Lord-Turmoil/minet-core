@@ -4,6 +4,8 @@
 
 MINET_BEGIN
 
+const char* Version = "0.1.0";
+
 LogLevel ParseLogLevel(std::string level)
 {
     std::transform(level.begin(), level.end(), level.begin(), tolower);

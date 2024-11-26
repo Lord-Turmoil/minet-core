@@ -9,7 +9,7 @@ MINET_BEGIN
 class HttpRequestWrapper
 {
 public:
-    HttpRequestWrapper(const HttpRequest* request) : _request(request)
+    explicit HttpRequestWrapper(const HttpRequest* request) : _request(request)
     {
     }
 
@@ -40,9 +40,10 @@ protected:
 class TextRequest : public HttpRequestWrapper
 {
 public:
-    TextRequest(const HttpRequest* request) : HttpRequestWrapper(request)
+    explicit TextRequest(const HttpRequest* request) : HttpRequestWrapper(request)
     {
     }
+    ~TextRequest() override = default;
 
     const std::string& Text() const
     {
@@ -53,10 +54,11 @@ public:
 /**
  * @brief Wrapper for json request.
  */
-class JsonRequest : public HttpRequestWrapper
+class JsonRequest final : public HttpRequestWrapper
 {
 public:
-    JsonRequest(const HttpRequest* request);
+    explicit JsonRequest(const HttpRequest* request);
+    ~JsonRequest() override = default;
 
     const nlohmann::json& Json() const
     {

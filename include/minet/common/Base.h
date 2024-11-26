@@ -48,6 +48,8 @@
 
 MINET_BEGIN
 
+extern const char* Version;
+
 template <typename T> using Ref = std::shared_ptr<T>;
 
 template <typename T, typename... Args> constexpr Ref<T> CreateRef(Args&&... args)

@@ -42,7 +42,7 @@ template <typename TResponse> struct ResponseFormatter
  * @tparam TResponse Type of the response.
  */
 template <typename TRequest = TextRequest, typename TResponse = TextResponse>
-class RequestHandler : public IRequestHandler
+class RequestHandler final : public IRequestHandler
 {
 public:
     explicit RequestHandler(const std::function<void(const TRequest&, TResponse&)>& handler) : _handler(handler)
@@ -84,7 +84,7 @@ template <> struct ResponseFormatter<TextResponse>
 {
     static TextResponse PreHandle(HttpResponse& response)
     {
-        return { &response };
+        return TextResponse(&response);
     }
 
     static void PostHandle(TextResponse& response)
@@ -97,7 +97,7 @@ template <> struct ResponseFormatter<JsonResponse>
 {
     static JsonResponse PreHandle(HttpResponse& response)
     {
-        return { &response };
+        return JsonResponse(&response);
     }
 
     static void PostHandle(JsonResponse& response)

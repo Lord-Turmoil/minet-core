@@ -10,11 +10,16 @@ namespace io
 class StreamWriter
 {
 public:
-    StreamWriter(const Ref<Stream>& stream) : _stream(stream)
+    explicit StreamWriter(const Ref<Stream>& stream) : _stream(stream)
     {
     }
 
     virtual ~StreamWriter() = default;
+
+    StreamWriter(const StreamWriter& other) = delete;
+    StreamWriter(StreamWriter&& other) noexcept = delete;
+    StreamWriter& operator=(const StreamWriter& other) = delete;
+    StreamWriter& operator=(StreamWriter&& other) noexcept = delete;
 
     virtual int Write(char ch) = 0;
     virtual ssize_t Write(const char* buffer, size_t length) = 0;

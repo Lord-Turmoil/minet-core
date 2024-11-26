@@ -13,7 +13,7 @@ class Logger;
 class BasicServer : public IServer
 {
 public:
-    BasicServer(const Ref<ServerConfig>& config);
+    explicit BasicServer(const Ref<ServerConfig>& config);
     ~BasicServer() override;
 
     static const char* Identifier()
@@ -23,7 +23,7 @@ public:
 
     /**
      * @brief Start the server asynchronously.
-     * @return The asnyc task.
+     * @return The async task.
      */
     Ref<Task> StartAsync() override;
 

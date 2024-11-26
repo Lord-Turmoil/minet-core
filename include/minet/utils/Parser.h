@@ -12,7 +12,7 @@ namespace http
 
 /**
  * @brief Clean up the URL path.
- * If the URL path does not starts with '/', add one, and remove trailing '/'.
+ * If the URL path does not start with '/', add one, and remove trailing '/'.
  * e.g. "abc" -> "/abc", "abc/" -> "/abc", "/abc" -> "/abc", "/abc/" -> "/abc"
  */
 std::string CleanPath(const std::string& path);

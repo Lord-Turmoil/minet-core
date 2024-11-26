@@ -22,13 +22,13 @@ void IRequestDispatcher::RegisterHandler(const std::string& path, http::HttpMeth
         auto headerIt = pathIt->second.find(method);
         if (headerIt != pathIt->second.end())
         {
-            _logger->Warn("Handler for '{} {}' already registered", http::HttpMethodToString(method), cleanedPath);
+            _logger->Warn("Handler for '{} {}' already registered", HttpMethodToString(method), cleanedPath);
             return;
         }
     }
 
     _handlers[cleanedPath][method] = handler;
-    _logger->Debug("Registered handler for '{} {}'", http::HttpMethodToString(method), cleanedPath);
+    _logger->Debug("Registered handler for '{} {}'", HttpMethodToString(method), cleanedPath);
 }
 
 void IRequestDispatcher::RegisterErrorHandler(int statusCode, const Ref<IRequestHandler>& handler)

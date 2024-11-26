@@ -14,7 +14,14 @@ namespace io
 class Stream
 {
 public:
+    Stream() = default;
     virtual ~Stream() = default;
+
+    // No copy and move.
+    Stream(const Stream& other) = delete;
+    Stream(Stream&& other) noexcept = delete;
+    Stream& operator=(const Stream& other) = delete;
+    Stream& operator=(Stream&& other) noexcept = delete;
 
     virtual bool IsReadable() const = 0;
     virtual bool IsWritable() const = 0;

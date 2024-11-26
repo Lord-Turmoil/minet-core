@@ -10,11 +10,16 @@ namespace io
 class StreamReader
 {
 public:
-    StreamReader(const Ref<Stream>& stream) : _stream(stream)
+    explicit StreamReader(const Ref<Stream>& stream) : _stream(stream)
     {
     }
 
     virtual ~StreamReader() = default;
+
+    StreamReader(const StreamReader& other) = delete;
+    StreamReader(StreamReader&& other) noexcept = delete;
+    StreamReader& operator=(const StreamReader& other) = delete;
+    StreamReader& operator=(StreamReader&& other) noexcept = delete;
 
     virtual int Read() = 0;
     virtual ssize_t Read(char* buffer, size_t length) = 0;
@@ -28,7 +33,7 @@ protected:
 class BufferedStreamReader final : public StreamReader
 {
 public:
-    BufferedStreamReader(const Ref<Stream>& stream);
+    explicit BufferedStreamReader(const Ref<Stream>& stream);
     ~BufferedStreamReader() override;
 
     int Read() override;

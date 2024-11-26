@@ -34,7 +34,7 @@ constexpr char CONTENT_LENGTH[]     = "Content-Length";
 /*
  * This part mimics the HTTP context in ASP.NET Core.
  */
-enum class HttpMethod
+enum class HttpMethod : uint8_t
 {
     GET,
     POST,

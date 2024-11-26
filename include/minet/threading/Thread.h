@@ -23,7 +23,7 @@ class Thread final
 public:
     using ThreadFn = std::function<void(void)>;
 
-    Thread(ThreadFn routine);
+    explicit Thread(ThreadFn routine);
     ~Thread();
 
     static Ref<Thread> Create(const ThreadFn& routine);
@@ -83,7 +83,7 @@ private:
     void _CleanUp();
 
 private:
-    // Since pthread routine requries a void* arg, we need to adapt
+    // Since pthread routine requires a void* arg, we need to adapt
     // our function signature to match it.
     static void* _ThreadRoutine(void* arg);
 

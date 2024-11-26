@@ -37,7 +37,7 @@ public:
     /**
      * @brief Dispatch the given HttpContext to the corresponding handler.
      * @note
-     * Will fallback to the default handler if no handler is found. And do
+     * Will fall back to the default handler if no handler is found. And do
      * nothing if no default handler is provided.
      */
     void Dispatch(const Ref<HttpContext>& context);

@@ -9,8 +9,8 @@ namespace native
 struct SignalHandlerRegistration
 {
     int Signal;
-    std::function<void()> Handler;
     bool Once;
+    std::function<void()> Handler;
 };
 
 static std::unordered_map<int, SignalHandlerRegistration> sSignalHandlers;
@@ -19,15 +19,21 @@ static void _SignalHandler(int sig);
 
 int SetSignalHandler(int sig, const std::function<void()>& handler, bool once)
 {
-    sSignalHandlers[sig] = { sig, handler, once };
-    signal(sig, _SignalHandler);
+    sSignalHandlers[sig] = { sig, once, handler };
+    if (auto r = signal(sig, _SignalHandler); r == SIG_ERR)
+    {
+        return -1;
+    }
     return 0;
 }
 
 int RemoveSignalHandler(int sig)
 {
     sSignalHandlers.erase(sig);
-    signal(sig, SIG_DFL);
+    if (auto r = signal(sig, SIG_DFL); r == SIG_ERR)
+    {
+        return -1;
+    }
     return 0;
 }
 
@@ -46,6 +52,7 @@ void _SignalHandler(int sig)
     }
     else
     {
+        // FIXME: Error omitted.
         signal(sig, _SignalHandler);
     }
 }
