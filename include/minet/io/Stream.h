@@ -11,6 +11,8 @@ namespace io
 
 /**
  * @brief Interface for stream.
+ * @note Stream doesn't follow RAII, so it require manual close.
+ * @note It guarantees that double close is OK.
  */
 class Stream
 {
@@ -27,8 +29,20 @@ public:
     virtual bool IsReadable() const = 0;
     virtual bool IsWritable() const = 0;
 
+    /**
+     * @brief Read from the stream.
+     * @param buffer Target buffer.
+     * @param length Maximum length to read.
+     * @return How many characters read, -1 on failure.
+     */
     virtual ssize_t Read(char* buffer, size_t length) = 0;
     virtual ssize_t Write(const char* buffer, size_t length) = 0;
+
+    /**
+     * @brief Close the stream.
+     * @return 0 on success, otherwise failed.
+     */
+    virtual int Close() = 0;
 };
 
 /**
@@ -47,6 +61,8 @@ public:
     ssize_t Read(char* buffer, size_t length) override;
     ssize_t Write(const char* buffer, size_t length) override;
 
+    int Close() override;
+
 private:
     int _fd;
 };
@@ -62,7 +78,7 @@ public:
 
     bool IsReadable() const override
     {
-        return true;
+        return !_closed;
     }
     bool IsWritable() const override
     {
@@ -70,14 +86,14 @@ public:
     }
 
     ssize_t Read(char* buffer, size_t length) override;
-    ssize_t Write(const char* buffer, size_t length) override
-    {
-        return -1;
-    }
+    ssize_t Write(const char* buffer, size_t length) override;
+
+    int Close() override;
 
 private:
     std::vector<char> _buffer;
-    size_t _offset = 0;
+    size_t _offset;
+    bool _closed;
 };
 
 } // namespace io

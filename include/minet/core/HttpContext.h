@@ -105,13 +105,6 @@ struct HttpContext
 {
     HttpRequest Request;
     HttpResponse Response;
-
-private:
-    // This is ugly. But I cannot think of other ways to hold the
-    // original socket fd in order to close it.
-    friend int CreateHttpContext(const network::AcceptData& data, Ref<HttpContext>* context);
-    friend int DestroyHttpContext(const Ref<HttpContext>& context);
-    int _socketFd;
 };
 
 /**

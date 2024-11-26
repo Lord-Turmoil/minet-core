@@ -12,8 +12,6 @@ int CreateHttpContext(const network::AcceptData& data, Ref<HttpContext>* context
     Ref<HttpContext> ctx = CreateRef<HttpContext>();
     Ref<io::Stream> stream = CreateRef<io::SocketStream>(data.SocketFd);
 
-    ctx->_socketFd = data.SocketFd;
-
     ctx->Request.Host = network::AddressToHost(data.Address.sin_addr.s_addr, data.Address.sin_port);
     ctx->Request.BodyStream = stream;
 
@@ -31,11 +29,12 @@ int CreateHttpContext(const network::AcceptData& data, Ref<HttpContext>* context
 
 int DestroyHttpContext(const Ref<HttpContext>& context)
 {
-    if (context->_socketFd > 0)
-    {
-        return network::CloseSocket(context->_socketFd);
-    }
-    return 0;
+    // Even if these two streams can be the same, the stream
+    // ensures that double close is OK.
+    int r1 = context->Request.BodyStream->Close();
+    int r2 = context->Response.BodyStream->Close();
+
+    return (r1 == 0) && (r2 == 0);
 }
 
 std::string HttpRequest::ToString() const
