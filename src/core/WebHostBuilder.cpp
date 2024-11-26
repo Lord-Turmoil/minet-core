@@ -108,7 +108,16 @@ void WebHostBuilder::_LoadSettings()
         std::ifstream file(_appSettingsPath);
         if (file.is_open())
         {
-            _config = json::parse(file, nullptr, false, true);
+            try
+            {
+                _config = json::parse(file, nullptr, true, true);
+            }
+            catch (const std::exception& e)
+            {
+                std::cerr << "Failed to parse " << _appSettingsPath << '\n';
+                std::cerr << "Invalid JSON format: " << e.what() << '\n';
+                exit(2);
+            }
         }
         else
         {
@@ -118,88 +127,45 @@ void WebHostBuilder::_LoadSettings()
         file.close();
     }
 
-    if (_config.is_discarded())
+    try
     {
-        std::cerr << "Failed to parse app settings file: " << _appSettingsPath << '\n';
-        abort();
+        auto serverConfig = LoadServerConfig(_config.value("server", json::object()));
+        auto loggerConfig = LoadLoggerConfig(_config.value("logging", json::object()));
+        _container->AddSingleton<ServerConfig>(serverConfig);
+        _container->AddSingleton<LoggerConfig>(loggerConfig);
     }
-
-    _LoadServerSettings(_config.value("server", json::object()));
-    _LoadLoggingSettings(_config.value("logging", json::object()));
+    catch (const std::exception& e)
+    {
+        std::cerr << "Failed to load settings from " << _appSettingsPath << '\n';
+        std::cerr << "Invalid app settings format: " << e.what() << '\n';
+        exit(2);
+    }
 }
 
-void WebHostBuilder::_LoadServerSettings(const nlohmann::json& config)
+void WebHostBuilder::_InitializeComponents()
 {
-    int port = config.value("port", 5000);
-    if (port <= 0 || port > 65535)
-    {
-        std::cerr << "Invalid port number: " << port << ", use default 5000 instead." << '\n';
-        port = 5000;
-    }
-    _container->AddSingleton<ServerConfig>(CreateRef<ServerConfig>(new ServerConfig{ static_cast<uint16_t>(port) }));
+    _LoadSettings();
 
-    std::string name = config.value("name", "Basic");
-    if (name == BasicServer::Identifier())
+    // Server
+    auto serverConfig = _container->Resolve<ServerConfig>();
+    if (serverConfig->Name == BasicServer::Identifier())
     {
         _container->AddSingleton<IServer, BasicServer, ServerConfig>();
         _container->AddSingleton<IRequestDispatcher, BasicDispatcher>();
     }
     else
     {
-        std::cerr << "Invalid server name: " << name << '\n';
-        abort();
-    }
-}
-
-void WebHostBuilder::_LoadLoggingSettings(const nlohmann::json& config)
-{
-    Ref<LoggerConfig> loggerConfig = CreateRef<LoggerConfig>();
-    bool hasRoot = false;
-
-    for (auto it = config.begin(); it != config.end(); ++it)
-    {
-        std::string name = it.key();
-        const nlohmann::json& spec = it.value();
-        LogLevel level = ParseLogLevel(spec.value("level", "Debug"));
-        if (level == LogLevel::Invalid)
-        {
-            std::cerr << "Invalid log level: " << spec.value("level", "Debug") << ", use default Debug instead."
-                      << '\n';
-            level = LogLevel::Debug;
-        }
-        std::vector<std::string> sinks = spec.value("sinks", std::vector<std::string>{ "stdout" });
-
-        if (name == "root")
-        {
-            loggerConfig->DefaultLevel = level;
-            loggerConfig->DefaultSinks = sinks;
-            hasRoot = true;
-        }
-        else
-        {
-            loggerConfig->Specifications[name] = { name, level, sinks };
-        }
+        std::cerr << "Unknown server: " << serverConfig->Name << '\n';
+        exit(3);
     }
 
-    // In case there is no root logger, we will set the default settings.
-    if (!hasRoot)
-    {
-        loggerConfig->DefaultLevel = LogLevel::Debug;
-        loggerConfig->DefaultSinks = { "stdout" };
-    }
-
-    _container->AddSingleton<LoggerConfig>(loggerConfig);
-}
-
-void WebHostBuilder::_InitializeComponents()
-{
-    // Some components are added when loading the settings.
-    _LoadSettings();
-
+    // Logger factory
     _container->AddSingleton<ILoggerFactory, LoggerFactory, LoggerConfig>();
 
-    // Since we will register handlers before build, we have to initialize
-    // the dispatcher first.
+    // Initialize loggers.
+    auto server = _container->Resolve<IServer>();
+    server->SetLogger(GetLogger("Server"));
+
     auto dispatcher = _container->Resolve<IRequestDispatcher>();
     dispatcher->SetLogger(GetLogger("RequestDispatcher"));
 }

@@ -6,19 +6,30 @@
         "port": 5000 // *5000 or any valid port number (1-65535)
     },
     "logging": { // by default, have root config
-        "root": {
-            "level": "Debug", // All | Fine | *Debug | Info | Warning | Error | Critical | Disabled
-            "sinks": [ // multiple values, *stdout | stderr | file path
-                "stdout",
-                "server.log"
-            ]
-        },
-        "Demo": {
-            "level": "Debug",
-            "sinks": [
-                "stdout",
-                "demo.log"
-            ]
+        "level": "Debug", // All | Fine | *Debug | Info | Warning | Error | Critical | Disabled
+        "pattern": "",
+        "sinks": [
+            {
+                "file": "stdout"
+            },
+            {
+                "pattern": "[%Y-%m-%d %H:%M:%S] %8l [%6n]: %v",
+                "file": "server.log"
+            }
+        ],
+        "loggers": {
+            "Demo": {
+                "level": "Debug",
+                "pattern": "%^[%Y-%m-%d %H:%M:%S] %l [%6n]: %v%$",
+                "sinks": [
+                    {
+                        "file": "stdout"
+                    },
+                    {
+                        "file": "demo.log"
+                    }
+                ]
+            }
         }
     }
 }

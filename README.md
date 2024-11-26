@@ -155,23 +155,44 @@ Notably, `name` specifies which server to use. Currently, **minet-core** has two
 ```json
 {
     "logging": {
-        "name-of-the-logger": {
-            "level": "Debug",
-            "sinks": [
-                "console or output file"
-            ]
+        "level": "Debug",
+        "pattern": "",
+        "sinks": [
+            {
+                "file": "stdout"
+            },
+            {
+                "pattern": "[%Y-%m-%d %H:%M:%S] %8l [%6n]: %v",
+                "file": "server.log"
+            }
+        ],
+        "loggers": {
+            "Demo": {
+                "level": "Debug",
+                "pattern": "%^[%Y-%m-%d %H:%M:%S] %l [%6n]: %v%$",
+                "sinks": [
+                    {
+                        "file": "stdout"
+                    },
+                    {
+                        "file": "demo.log"
+                    }
+                ]
+            }
         }
     }
 }
 ```
 
+In the top level of `logging` are default configurations. And specific configurations for individual loggers are under `loggers`. Each logger has its own `level`, `pattern`, and `sinks`. If one of these are missing, it will inherit from the default settings.
+
 `level` is the logging level, and it can be one of the following: `All`, `Fine`, `Debug`, `Info`, `Warning`, `Error`, `Critical`, `Disabled`.
 
-`sinks` is the output destination of the log. You can use `stdout` or `stderr` for console output, or specify a file path for file output.
+`pattern` is the format of log messages. See [spdlog/Custom formatting](https://github.com/gabime/spdlog/wiki/3.-Custom-formatting#customizing-format-using-set_pattern) for more information. By default, it is empty, using the default pattern of `spdlog`. If it is missing, will inherit from the default one.
 
-There is a built-in name `root` for all loggers if no specific rule applies. By default, it will logging at `Debug` level to `stdout`. For specific loggers, if `level` or `sinks` is not specified, it will inherit from the `root` logger.
+`sinks` is the output destination of the log. For `file` field, you can use `stdout` or `stderr` for console output, or specify a file path for file output. You can also specify `pattern` here. If pattern is missing, it will use the `pattern` in the current logger.
 
-### Custom
+### Custom Settings
 
 Of course, you can add other settings in the configuration file. In this case, you have to manually handle them in your code. To get the original configuration JSON, use `WebHostBuilder::GetAppSettings()`.
 

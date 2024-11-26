@@ -47,18 +47,24 @@ void Logger::_Init(const LoggerSpecification& config)
 
     for (const auto& sink : config.Sinks)
     {
-        if (sink == "stdout")
+        Ref<spdlog::sinks::sink> sinkImpl;
+        if (sink.File == "stdout")
         {
-            logSinks.emplace_back(std::make_shared<spdlog::sinks::stdout_color_sink_mt>());
+            sinkImpl = CreateRef<spdlog::sinks::stdout_color_sink_mt>();
         }
-        else if (sink == "stderr")
+        else if (sink.File == "stderr")
         {
-            logSinks.emplace_back(std::make_shared<spdlog::sinks::stderr_color_sink_mt>());
+            sinkImpl = CreateRef<spdlog::sinks::stderr_color_sink_mt>();
         }
         else
         {
-            logSinks.emplace_back(std::make_shared<spdlog::sinks::basic_file_sink_mt>(sink, true));
+            sinkImpl = CreateRef<spdlog::sinks::basic_file_sink_mt>(sink.File, true);
         }
+        if (!sink.Pattern.empty())
+        {
+            sinkImpl->set_pattern(sink.Pattern);
+        }
+        logSinks.push_back(sinkImpl);
     }
 
     _impl = CreateRef<spdlog::logger>(config.Name, begin(logSinks), end(logSinks));

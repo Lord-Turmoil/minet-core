@@ -1,6 +1,7 @@
 #pragma once
 
 #include <functional>
+#include <nlohmann/json.hpp>
 #include "minet/common/Base.h"
 #include "minet/core/ILoggerFactory.h"
 
@@ -14,6 +15,12 @@ class Task;
  */
 struct ServerConfig
 {
+    /**
+     * @brief Which server to use.
+     * @note Can be "Basic" or "Mayhem".
+     */
+    std::string Name;
+
     /**
      * @brief The port number to listen on.
      */
@@ -49,5 +56,13 @@ private:
 protected:
     Ref<Logger> _logger;
 };
+
+/**
+ * @brief Load server configuration from JSON object.
+ * @param config JSON configuration entry.
+ * @return Loaded server config, or nullptr if failed.
+ * @throws std::runtime_error if the configuration is invalid.
+ */
+Ref<ServerConfig> LoadServerConfig(const nlohmann::json& config);
 
 MINET_END

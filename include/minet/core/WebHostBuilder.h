@@ -63,8 +63,6 @@ private:
     WebHostBuilder& _RegisterErrorHandler(int statusCode, const Ref<IRequestHandler>& handler);
 
     void _LoadSettings();
-    void _LoadServerSettings(const nlohmann::json& config);
-    void _LoadLoggingSettings(const nlohmann::json& config);
     void _InitializeComponents();
 
     /**
