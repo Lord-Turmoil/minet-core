@@ -19,25 +19,25 @@ static void echo(const TextRequest& request, JsonResponse& response)
 
 int main(int argc, char* argv[])
 {
-    WebHostBuilder builder;
+    auto builder = WebHostBuilder::Create();
 
     // Use custom app settings if provided.
     if (argc == 2)
     {
-        builder.UseAppSettings(argv[1]);
+        builder->UseAppSettings(argv[1]);
     }
     else
     {
-        builder.UseAppSettings();
+        builder->UseAppSettings();
     }
 
     // Get app logger.
-    logger = builder.GetLogger("Demo");
+    logger = builder->GetLogger("Demo");
 
     // Register handlers and run the server.
-    builder.Get("/ping", RequestHandler<>::Bind(ping))
-        .Post("/echo", RequestHandler<TextRequest, JsonResponse>::Bind(echo))
-        .Build()
+    builder->Get("/ping", RequestHandler<>::Bind(ping))
+        ->Post("/echo", RequestHandler<TextRequest, JsonResponse>::Bind(echo))
+        ->Build()
         ->Run();
 
     return 0;

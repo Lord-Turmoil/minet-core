@@ -42,13 +42,7 @@ Ref<Task> BasicServer::StartAsync()
     }
 
     _isRunning = true;
-    Ref<Task> task = Task::Create(Thread::Create(BIND_FN(_Serve)));
-    if (task->StartAsync() != 0)
-    {
-        _isRunning = false;
-        _logger->Error("Failed to start server");
-        return Task::Completed();
-    }
+    Ref<Task> task = Task::Create(BIND_FN(_Serve))->StartAsync();
     _logger->Info("Server started");
 
     return task;

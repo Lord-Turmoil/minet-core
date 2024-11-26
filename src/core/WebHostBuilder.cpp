@@ -18,7 +18,12 @@ WebHostBuilder::WebHostBuilder()
     _PrintBanner();
 }
 
-WebHostBuilder& WebHostBuilder::UseAppSettings(const std::string& path)
+Ref<WebHostBuilder> WebHostBuilder::Create()
+{
+    return CreateRef<WebHostBuilder>(new WebHostBuilder());
+}
+
+Ref<WebHostBuilder> WebHostBuilder::UseAppSettings(const std::string& path)
 {
     if (_initialized)
     {
@@ -30,20 +35,20 @@ WebHostBuilder& WebHostBuilder::UseAppSettings(const std::string& path)
     _appSettingsPath = path;
     _InitializeComponents();
 
-    return *this;
+    return shared_from_this();
 }
 
-WebHostBuilder& WebHostBuilder::Get(const std::string& path, const Ref<IRequestHandler>& handler)
+Ref<WebHostBuilder> WebHostBuilder::Get(const std::string& path, const Ref<IRequestHandler>& handler)
 {
     return _RegisterHandler(path, http::HttpMethod::GET, handler);
 }
 
-WebHostBuilder& WebHostBuilder::Post(const std::string& path, const Ref<IRequestHandler>& handler)
+Ref<WebHostBuilder> WebHostBuilder::Post(const std::string& path, const Ref<IRequestHandler>& handler)
 {
     return _RegisterHandler(path, http::HttpMethod::POST, handler);
 }
 
-WebHostBuilder& WebHostBuilder::Error(int statusCode, const Ref<IRequestHandler>& handler)
+Ref<WebHostBuilder> WebHostBuilder::Error(int statusCode, const Ref<IRequestHandler>& handler)
 {
     return _RegisterErrorHandler(statusCode, handler);
 }
@@ -76,19 +81,19 @@ Ref<WebHost> WebHostBuilder::Build()
     return host;
 }
 
-WebHostBuilder& WebHostBuilder::_RegisterHandler(const std::string& path, http::HttpMethod method,
-                                                 const Ref<IRequestHandler>& handler)
+Ref<WebHostBuilder> WebHostBuilder::_RegisterHandler(const std::string& path, http::HttpMethod method,
+                                                     const Ref<IRequestHandler>& handler)
 {
     _Preamble();
     _container->Resolve<IRequestDispatcher>()->RegisterHandler(path, method, handler);
-    return *this;
+    return shared_from_this();
 }
 
-WebHostBuilder& WebHostBuilder::_RegisterErrorHandler(int statusCode, const Ref<IRequestHandler>& handler)
+Ref<WebHostBuilder> WebHostBuilder::_RegisterErrorHandler(int statusCode, const Ref<IRequestHandler>& handler)
 {
     _Preamble();
     _container->Resolve<IRequestDispatcher>()->RegisterErrorHandler(statusCode, handler);
-    return *this;
+    return shared_from_this();
 }
 
 /**

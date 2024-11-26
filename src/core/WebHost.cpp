@@ -8,7 +8,7 @@
 
 MINET_BEGIN
 
-void WebHost::Run()
+void WebHost::Run() const
 {
     _logger->Info("Starting web host");
     _server->StartAsync()->Await();
@@ -28,7 +28,7 @@ WebHost::WebHost(const Ref<IServer>& server, const Ref<IRequestDispatcher>& disp
     native::SetSignalHandler(SIGINT, BIND_FN(_OnInterrupted));
 }
 
-void WebHost::_OnInterrupted()
+void WebHost::_OnInterrupted() const
 {
     _logger->Warn("^C received, stopping");
     _server->Stop();

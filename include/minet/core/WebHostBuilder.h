@@ -2,7 +2,6 @@
 
 #include <mioc/mioc.h>
 #include <nlohmann/json.hpp>
-#include <unordered_map>
 #include "minet/common/Base.h"
 
 MINET_BEGIN
@@ -18,22 +17,21 @@ class WebHost;
  * There should only be one instance of this class in the whole program.
  * And one instance of this class should only build one web host at a time.
  */
-class WebHostBuilder final
+class WebHostBuilder final : std::enable_shared_from_this<WebHostBuilder>
 {
 public:
-    WebHostBuilder();
+    static Ref<WebHostBuilder> Create();
 
-public:
     /**
      * @warning
      * This must be called before any other methods, and it should only be
      * called once.
      */
-    WebHostBuilder& UseAppSettings(const std::string& path = "");
+    Ref<WebHostBuilder> UseAppSettings(const std::string& path = "");
 
-    WebHostBuilder& Get(const std::string& path, const Ref<IRequestHandler>& handler);
-    WebHostBuilder& Post(const std::string& path, const Ref<IRequestHandler>& handler);
-    WebHostBuilder& Error(int statusCode, const Ref<IRequestHandler>& handler);
+    Ref<WebHostBuilder> Get(const std::string& path, const Ref<IRequestHandler>& handler);
+    Ref<WebHostBuilder> Post(const std::string& path, const Ref<IRequestHandler>& handler);
+    Ref<WebHostBuilder> Error(int statusCode, const Ref<IRequestHandler>& handler);
 
     /**
      * @brief Get the service container.
@@ -58,9 +56,11 @@ public:
     Ref<WebHost> Build();
 
 private:
-    WebHostBuilder& _RegisterHandler(const std::string& path, http::HttpMethod method,
-                                     const Ref<IRequestHandler>& handler);
-    WebHostBuilder& _RegisterErrorHandler(int statusCode, const Ref<IRequestHandler>& handler);
+    WebHostBuilder();
+
+    Ref<WebHostBuilder> _RegisterHandler(const std::string& path, http::HttpMethod method,
+                                         const Ref<IRequestHandler>& handler);
+    Ref<WebHostBuilder> _RegisterErrorHandler(int statusCode, const Ref<IRequestHandler>& handler);
 
     void _LoadSettings();
     void _InitializeComponents();

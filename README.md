@@ -55,13 +55,13 @@ using namespace minet;
 
 int main()
 {
-    WebHostBuilder()
-        .UseAppSettings()
-        .Get("/ping", RequestHandler<>::Bind(
+    WebHostBuilder::Create()
+        ->UseAppSettings()
+        ->Get("/ping", RequestHandler<>::Bind(
             [](const TextRequest& request, TextResponse& response) {
                 response.Text().append("pong"); 
             }))
-        .Build()
+        ->Build()
         ->Run();
     return 0;
 }
@@ -114,8 +114,8 @@ void echo(const TextRequest& request, JsonResponse& response);
 // create WebHostBuilder
 
 builder
-    .Get("/ping", RequestHandler<>::Bind(ping))
-    .Post("/echo", RequestHandler<TextRequest, JsonResponse>::Bind(echo));
+    ->Get("/ping", RequestHandler<>::Bind(ping))
+    ->Post("/echo", RequestHandler<TextRequest, JsonResponse>::Bind(echo));
 ```
 
 See, isn't it easy?😉
@@ -204,6 +204,18 @@ Of course, you can add other settings in the configuration file. In this case, y
 Behind the settings, **minet-core** uses dependency injection to manage all the pluggable components. You can get the IoC container via `WebHost::GetServiceContainer()`. It uses lazy initialization for singletons. Also, configurations are also injected into the container, you can get them by resolving `ServerConfig` and `LoggerConfig`.
 
 If you want to add custom components, or replace the built-in ones, you can then register whatever you want after `UseAppSettings()`. The existing components will be replaced if you register the same interface again.
+
+---
+
+# Considerations
+
+> [!NOTE]
+>
+> This section contains some personal design preferences.
+
+## Heap vs Stack
+
+You may notice that, in **minet-core**, some classes have private constructors, so that one can only create them in heap using the provided factory function. Why? Because I personally prefer using `->` in chained calls, and I don't want to mix `.` and `->` up. It eliminates the use of raw pointers, but also robs the freedom of choosing stack or heap.
 
 ---
 

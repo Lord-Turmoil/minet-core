@@ -20,7 +20,7 @@ public:
     /**
      * Main loop of the Web server.
      */
-    void Run();
+    void Run() const;
 
 private:
     WebHost(const Ref<IServer>& server, const Ref<IRequestDispatcher>& dispatcher,
@@ -32,7 +32,7 @@ private:
         _logger = logger;
     }
 
-    void _OnInterrupted();
+    void _OnInterrupted() const;
 
 private:
     Ref<Logger> _logger;
