@@ -1,10 +1,17 @@
+/**
+ * @author Tony S.
+ * @details Types for logging.
+ */
+
 #pragma once
 
-#include <nlohmann/json.hpp>
+#include "minet/common/Base.h"
+
 #include <string>
 #include <unordered_map>
 #include <vector>
-#include "minet/common/Base.h"
+
+#include <nlohmann/json.hpp>
 
 MINET_BEGIN
 

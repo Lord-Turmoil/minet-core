@@ -1,7 +1,13 @@
+/**
+ * @author Tony S.
+ * @details StreamWriter interface and implementations.
+ */
+
 #pragma once
 
+#include "io/Stream.h"
+
 #include <string>
-#include "minet/io/Stream.h"
 
 MINET_BEGIN
 

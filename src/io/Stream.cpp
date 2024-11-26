@@ -1,5 +1,6 @@
-#include "minet/io/Stream.h"
-#include "minet/utils/Network.h"
+#include "io/Stream.h"
+
+#include "utils/Network.h"
 
 MINET_BEGIN
 
@@ -60,7 +61,7 @@ BufferInputStream::BufferInputStream(const char* buffer, size_t length)
 
 ssize_t BufferInputStream::Read(char* buffer, size_t length)
 {
-    if (IsReadable())
+    if (!IsReadable())
     {
         return -1;
     }

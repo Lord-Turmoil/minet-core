@@ -1,7 +1,15 @@
+/**
+ * @author Tony S.
+ * @details
+ * WebHost is the fundamental host for the server.
+ * It manages the server, request dispatcher, and the service container.
+ */
+
 #pragma once
 
-#include <mioc/mioc.h>
 #include "minet/common/Base.h"
+
+#include <mioc/mioc.h>
 
 MINET_BEGIN
 

@@ -1,8 +1,13 @@
+/**
+ * @author Tony S.
+ * @details Wrapper for raw HttpRequest.
+ */
+
 #pragma once
 
-#include <nlohmann/json.hpp>
-#include "minet/common/Base.h"
 #include "minet/core/HttpContext.h"
+
+#include <nlohmann/json.hpp>
 
 MINET_BEGIN
 

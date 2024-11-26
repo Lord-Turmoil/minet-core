@@ -1,8 +1,9 @@
 #pragma once
 
-#include <csignal>
-#include <functional>
 #include "minet/common/Base.h"
+
+#include <csignal> // include this so other files won't need manual inclusion
+#include <functional>
 
 MINET_BEGIN
 

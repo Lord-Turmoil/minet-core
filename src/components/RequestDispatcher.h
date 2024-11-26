@@ -1,13 +1,18 @@
+/**
+ * @author Tony S.
+ * @details Concrete request dispatcher.
+ */
+
 #pragma once
 
-#include "minet/core/IRequestDispatcher.h"
+#include "core/IRequestDispatcher.h"
 
 MINET_BEGIN
 
-class BasicDispatcher final : public IRequestDispatcher
+class RequestDispatcher final : public IRequestDispatcher
 {
 public:
-    ~BasicDispatcher() override = default;
+    ~RequestDispatcher() override = default;
 
 private:
     int _InvokeHandler(const Ref<IRequestHandler>& handler, const Ref<HttpContext>& context) override;

@@ -1,29 +1,43 @@
+/**
+ * @author Tony S.
+ * @details Task wrapper.
+ */
+
 #pragma once
+
+#include "minet/common/Assert.h"
 
 #include <functional>
 #include <future>
 #include <utility>
-#include "minet/common/Assert.h"
-#include "minet/common/Base.h"
 
 MINET_BEGIN
 
 /**
  * @brief Basic task has no return value.
  */
-class Task final : std::enable_shared_from_this<Task>
+class Task final : public std::enable_shared_from_this<Task>
 {
+    struct Private
+    {
+        explicit Private() = default;
+    };
+
 public:
     using TaskFn = std::function<void()>;
 
+    explicit Task(TaskFn routine, Private) : _routine(std::move(routine))
+    {
+    }
+
     static Ref<Task> Create(const TaskFn& routine)
     {
-        return CreateRef<Task>(new Task(routine));
+        return CreateRef<Task>(routine, Private());
     }
 
     static Ref<Task> Completed()
     {
-        return CreateRef<Task>(new Task([] {}));
+        return CreateRef<Task>([] {}, Private());
     }
 
     Ref<Task> StartAsync()
@@ -45,11 +59,6 @@ public:
     }
 
 private:
-    explicit Task(TaskFn routine) : _routine(std::move(routine))
-    {
-    }
-
-private:
     TaskFn _routine;
     std::future<void> _future;
 };
@@ -59,15 +68,24 @@ private:
  */
 template <typename TResult> class ValueTask final : public std::enable_shared_from_this<ValueTask<TResult>>
 {
+    struct Private
+    {
+        explicit Private() = default;
+    };
+
 public:
     using ValueTaskFn = std::function<TResult()>;
+
+    explicit ValueTask(ValueTaskFn routine, Private) : _routine(std::move(routine))
+    {
+    }
 
     /**
      * @brief Create a task with the given thread.
      */
     static Ref<ValueTask> Create(ValueTaskFn routine)
     {
-        return CreateRef<Task>(new Task(std::move(routine)));
+        return CreateRef<Task>(std::move(routine), Private());
     }
 
     /**
@@ -75,7 +93,7 @@ public:
      */
     static Ref<ValueTask> Completed(const TResult& result)
     {
-        return CreateRef<Task>(new Task([result]() -> TResult { return result; }));
+        return CreateRef<Task>([result]() -> TResult { return result; }, Private());
     }
 
     /**
@@ -102,11 +120,6 @@ public:
     TResult Run()
     {
         return StartAsync().Await();
-    }
-
-private:
-    explicit ValueTask(ValueTaskFn routine) : _routine(std::move(routine))
-    {
     }
 
 private:

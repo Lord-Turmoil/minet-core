@@ -1,9 +1,14 @@
+/**
+ * @author Tony S.
+ * @details Request dispatcher interface.
+ */
+
 #pragma once
 
-#include <unordered_map>
-#include "minet/common/Base.h"
+#include "minet/common/Http.h"
 #include "minet/core/HttpContext.h"
-#include "minet/utils/Http.h"
+
+#include <unordered_map>
 
 MINET_BEGIN
 

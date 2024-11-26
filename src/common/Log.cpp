@@ -1,12 +1,9 @@
-#include <algorithm>
-#include <cctype>
-#include <iostream>
-
 #include "minet/common/Log.h"
 
-MINET_BEGIN
+#include <algorithm>
+#include <cctype>
 
-const char* Version = "0.1.0";
+MINET_BEGIN
 
 LogLevel ParseLogLevel(std::string level)
 {

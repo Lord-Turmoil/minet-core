@@ -1,4 +1,4 @@
-#include "minet/utils/Http.h"
+#include "minet/common/Http.h"
 
 MINET_BEGIN
 

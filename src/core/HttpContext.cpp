@@ -1,9 +1,12 @@
-#include <sstream>
-
 #include "minet/core/HttpContext.h"
-#include "minet/utils/Http.h"
-#include "minet/utils/Network.h"
-#include "minet/utils/Parser.h"
+
+#include "minet/common/Http.h"
+
+#include "io/Stream.h"
+#include "utils/Network.h"
+#include "utils/Parser.h"
+
+#include <sstream>
 
 MINET_BEGIN
 

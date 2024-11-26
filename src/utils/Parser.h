@@ -1,7 +1,13 @@
+/**
+ * @author Tony S.
+ * @details A tiny syntax parser for HTTP request.
+ */
+
 #pragma once
 
-#include <string>
 #include "minet/common/Base.h"
+
+#include <string>
 
 MINET_BEGIN
 

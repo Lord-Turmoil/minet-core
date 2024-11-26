@@ -1,4 +1,8 @@
 #include <minet/minet.h>
+
+#include "io/Stream.h"
+#include "utils/Parser.h"
+
 #include "doctest.h"
 
 TEST_CASE("TextRequest Wrapper")

@@ -1,4 +1,5 @@
-#include "minet/io/StreamWriter.h"
+#include "io/StreamWriter.h"
+
 #include <cstring>
 
 MINET_BEGIN

@@ -1,8 +1,13 @@
+/**
+ * @author Tony S.
+ * @details Logger interface and implementation.
+ */
+
 #pragma once
 
-#include <spdlog/spdlog.h>
-
 #include "minet/common/Log.h"
+
+#include <spdlog/spdlog.h>
 
 MINET_BEGIN
 

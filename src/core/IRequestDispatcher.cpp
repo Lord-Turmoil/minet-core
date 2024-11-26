@@ -1,10 +1,12 @@
-#include "minet/core/IRequestDispatcher.h"
+#include "core/IRequestDispatcher.h"
+
 #include "minet/common/Assert.h"
+#include "minet/common/Http.h"
 #include "minet/components/Logger.h"
-#include "minet/components/LoggerFactory.h"
 #include "minet/core/IRequestHandler.h"
-#include "minet/utils/Http.h"
-#include "minet/utils/Parser.h"
+
+#include "components/LoggerFactory.h"
+#include "utils/Parser.h"
 
 MINET_BEGIN
 

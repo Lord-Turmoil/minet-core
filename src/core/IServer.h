@@ -1,9 +1,15 @@
+/**
+ * @author Tony S.
+ * @details Server interface.
+ */
+
 #pragma once
 
-#include <functional>
-#include <nlohmann/json.hpp>
-#include "minet/common/Base.h"
 #include "minet/core/ILoggerFactory.h"
+
+#include <nlohmann/json.hpp>
+
+#include <functional>
 
 MINET_BEGIN
 

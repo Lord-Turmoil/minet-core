@@ -1,8 +1,14 @@
+/**
+ * @author Tony S.
+ * @details Concrete logger factory.
+ */
+
 #pragma once
 
-#include <unordered_map>
 #include "minet/common/Log.h"
 #include "minet/core/ILoggerFactory.h"
+
+#include <unordered_map>
 
 MINET_BEGIN
 

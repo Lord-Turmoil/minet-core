@@ -22,12 +22,14 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror")
 
 # library properties
 set(LIBRARY_BASE_PATH "${PROJECT_SOURCE_DIR}")
-include_directories("${LIBRARY_BASE_PATH}/include")
+set(PUBLIC_INCLUDE_DIRECTORIES "${LIBRARY_BASE_PATH}/include")
+set(PRIVATE_INCLUDE_DIRECTOREIS "${LIBRARY_BASE_PATH}/src")
+include_directories(${PUBLIC_INCLUDE_DIRECTORIES} ${PRIVATE_INCLUDE_DIRECTOREIS})
 file(GLOB_RECURSE SRC_LIST CONFIGURE_DEPENDS "${LIBRARY_BASE_PATH}/src/*.cpp")
 add_library(${BINARY_NAME} ${SRC_LIST})
 
 # target properties
-target_include_directories(${BINARY_NAME} PUBLIC ${INCLUDE_DIRECTORIES})
+target_include_directories(${BINARY_NAME} PUBLIC ${PUBLIC_INCLUDE_DIRECTOREIS})
 target_link_libraries(${BINARY_NAME} mioc spdlog nlohmann_json)
 
 # install properties

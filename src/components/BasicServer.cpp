@@ -1,9 +1,11 @@
-#include "minet/components/BasicServer.h"
+#include "components/BasicServer.h"
+
 #include "minet/common/Assert.h"
 #include "minet/components/Logger.h"
 #include "minet/core/HttpContext.h"
-#include "minet/threading/Task.h"
-#include "minet/utils/Network.h"
+
+#include "threading/Task.h"
+#include "utils/Network.h"
 
 MINET_BEGIN
 

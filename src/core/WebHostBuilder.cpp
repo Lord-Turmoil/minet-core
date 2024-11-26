@@ -1,18 +1,20 @@
-#include <fstream>
-#include <iostream>
+#include "minet/core/WebHostBuilder.h"
 
 #include "minet/common/Assert.h"
-#include "minet/components/BasicDispatcher.h"
-#include "minet/components/BasicServer.h"
-#include "minet/components/LoggerFactory.h"
 #include "minet/core/WebHost.h"
-#include "minet/core/WebHostBuilder.h"
+
+#include "components/BasicServer.h"
+#include "components/LoggerFactory.h"
+#include "components/RequestDispatcher.h"
+
+#include <fstream>
+#include <iostream>
 
 MINET_BEGIN
 
 static void _PrintBanner();
 
-WebHostBuilder::WebHostBuilder()
+WebHostBuilder::WebHostBuilder(Private)
     : _appSettingsPath("appsettings.json"), _container(mioc::ServiceContainer::New(true)), _initialized(false)
 {
     _PrintBanner();
@@ -20,7 +22,7 @@ WebHostBuilder::WebHostBuilder()
 
 Ref<WebHostBuilder> WebHostBuilder::Create()
 {
-    return CreateRef<WebHostBuilder>(new WebHostBuilder());
+    return CreateRef<WebHostBuilder>(Private());
 }
 
 Ref<WebHostBuilder> WebHostBuilder::UseAppSettings(const std::string& path)
@@ -156,7 +158,7 @@ void WebHostBuilder::_InitializeComponents()
     if (serverConfig->Name == BasicServer::Identifier())
     {
         _container->AddSingleton<IServer, BasicServer, ServerConfig>();
-        _container->AddSingleton<IRequestDispatcher, BasicDispatcher>();
+        _container->AddSingleton<IRequestDispatcher, RequestDispatcher>();
     }
     else
     {

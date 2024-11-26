@@ -1,11 +1,11 @@
 #pragma once
 
-#include "minet/common/Base.h"
-#include "minet/core/IServer.h"
+#include "core/IServer.h"
 
 MINET_BEGIN
 
 class Logger;
+class Task;
 
 /**
  * @brief The default server implementation.

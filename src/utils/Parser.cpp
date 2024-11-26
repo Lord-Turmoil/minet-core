@@ -1,8 +1,10 @@
-#include "minet/utils/Parser.h"
+#include "utils/Parser.h"
+
 #include "minet/common/Assert.h"
+#include "minet/common/Http.h"
 #include "minet/core/HttpContext.h"
-#include "minet/io/StreamReader.h"
-#include "minet/utils/Http.h"
+
+#include "io/StreamReader.h"
 
 MINET_BEGIN
 

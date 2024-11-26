@@ -1,6 +1,11 @@
+/**
+ * @author Tony S.
+ * @details StreamReader interface and implementations.
+ */
+
 #pragma once
 
-#include "minet/io/Stream.h"
+#include "io/Stream.h"
 
 MINET_BEGIN
 

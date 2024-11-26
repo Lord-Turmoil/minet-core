@@ -1,3 +1,8 @@
+/**
+ * @author Tony S.
+ * @details Interface for logger factory.
+ */
+
 #pragma once
 
 #include "minet/common/Base.h"

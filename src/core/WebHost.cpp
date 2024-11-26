@@ -1,10 +1,12 @@
 #include "minet/core/WebHost.h"
+
+#include "core/IRequestDispatcher.h"
+#include "core/IServer.h"
 #include "minet/common/Assert.h"
 #include "minet/core/ILoggerFactory.h"
-#include "minet/core/IRequestDispatcher.h"
-#include "minet/core/IServer.h"
-#include "minet/threading/Task.h"
-#include "minet/utils/Native.h"
+
+#include "threading/Task.h"
+#include "utils/Native.h"
 
 MINET_BEGIN
 

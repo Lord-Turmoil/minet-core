@@ -1,15 +1,26 @@
+/**
+ * @author Tony S.
+ * @details Context for an HTTP connection.
+ */
+
 #pragma once
+
+#include "minet/common/Http.h"
 
 #include <string>
 #include <unordered_map>
-#include "minet/common/Base.h"
-#include "minet/io/Stream.h"
-#include "minet/utils/Http.h"
-#include "minet/utils/Network.h"
 
 MINET_BEGIN
 
-// FIXME: Request and response struct is not well aligned.
+namespace io
+{
+class Stream;
+}
+
+namespace network
+{
+struct AcceptData;
+}
 
 struct HttpContext;
 

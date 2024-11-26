@@ -1,12 +1,14 @@
-#include "minet/components/BasicDispatcher.h"
+#include "components/RequestDispatcher.h"
+
+#include "minet/common/Http.h"
 #include "minet/core/HttpContext.h"
 #include "minet/core/IRequestHandler.h"
-#include "minet/io/StreamWriter.h"
-#include "minet/utils/Http.h"
+
+#include "io/StreamWriter.h"
 
 MINET_BEGIN
 
-int BasicDispatcher::_InvokeHandler(const Ref<IRequestHandler>& handler, const Ref<HttpContext>& context)
+int RequestDispatcher::_InvokeHandler(const Ref<IRequestHandler>& handler, const Ref<HttpContext>& context)
 {
     int statusCode = handler->Handle(context);
     if (statusCode == http::status::OK)
@@ -16,7 +18,7 @@ int BasicDispatcher::_InvokeHandler(const Ref<IRequestHandler>& handler, const R
     return statusCode;
 }
 
-void BasicDispatcher::_WriteResponse(const Ref<HttpContext>& context)
+void RequestDispatcher::_WriteResponse(const Ref<HttpContext>& context)
 {
     HttpResponse& response = context->Response;
     io::BufferedStreamWriter writer(response.BodyStream);

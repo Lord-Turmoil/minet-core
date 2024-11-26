@@ -1,8 +1,14 @@
+/**
+ * @author Tony S.
+ * @details Network utility functions.
+ */
+
 #pragma once
+
+#include "minet/common/Base.h"
 
 #include <netinet/in.h>
 #include <sys/types.h> // ssize_t
-#include "minet/common/Base.h"
 
 MINET_BEGIN
 

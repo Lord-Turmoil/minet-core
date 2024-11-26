@@ -1,4 +1,4 @@
-#include "minet/io/StreamReader.h"
+#include "io/StreamReader.h"
 
 #include <cstring>
 

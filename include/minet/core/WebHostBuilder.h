@@ -1,8 +1,15 @@
+/**
+ * @author Tony S.
+ * @details Builder class for WebHost.
+ */
+
 #pragma once
+
+#include "minet/common/Base.h"
+#include "minet/common/Http.h"
 
 #include <mioc/mioc.h>
 #include <nlohmann/json.hpp>
-#include "minet/common/Base.h"
 
 MINET_BEGIN
 
@@ -17,9 +24,16 @@ class WebHost;
  * There should only be one instance of this class in the whole program.
  * And one instance of this class should only build one web host at a time.
  */
-class WebHostBuilder final : std::enable_shared_from_this<WebHostBuilder>
+class WebHostBuilder final : public std::enable_shared_from_this<WebHostBuilder>
 {
+    struct Private
+    {
+        explicit Private() = default;
+    };
+
 public:
+    WebHostBuilder(Private);
+
     static Ref<WebHostBuilder> Create();
 
     /**
@@ -56,8 +70,6 @@ public:
     Ref<WebHost> Build();
 
 private:
-    WebHostBuilder();
-
     Ref<WebHostBuilder> _RegisterHandler(const std::string& path, http::HttpMethod method,
                                          const Ref<IRequestHandler>& handler);
     Ref<WebHostBuilder> _RegisterErrorHandler(int statusCode, const Ref<IRequestHandler>& handler);

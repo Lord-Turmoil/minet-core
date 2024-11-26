@@ -1,8 +1,16 @@
+/**
+ * @author Tony S.
+ * @details Provide assertion macros for debugging purposes.
+ */
+
 #pragma once
 
-#include <filesystem>
-#include <mioc/mioc.h>
+#include "minet/common/Base.h"
 #include "minet/components/Logger.h"
+
+#include <filesystem>
+#include <iostream>
+#include <spdlog/fmt/fmt.h>
 
 #ifdef MINET_ENABLE_ASSERT
 #define MINET_DEBUG_BREAK() __builtin_trap()
@@ -15,11 +23,7 @@
 #define _MINET_ASSERT_LOGGER(...)                                                                                      \
     do                                                                                                                 \
     {                                                                                                                  \
-        auto logger = mioc::SingletonContainer::GetContainer()->Resolve<minet::Logger>();                              \
-        if (logger)                                                                                                    \
-        {                                                                                                              \
-            logger->Critical(__VA_ARGS__);                                                                             \
-        }                                                                                                              \
+        std::cerr << "Assertion failed: " << fmt::format(__VA_ARGS__) << std::endl;                                    \
     } while (0)
 
 #define _MINET_ASSERT_IMPL(expression, msg, ...)                                                                       \

@@ -1,4 +1,4 @@
-#include "minet/core/IServer.h"
+#include "core/IServer.h"
 
 MINET_BEGIN
 

@@ -1,11 +1,18 @@
+/**
+ * @author Tony S.
+ * @details Helper to build request handler as endpoint.
+ */
+
 #pragma once
 
-#include <functional>
+#include "minet/core/IRequestHandler.h"
+
 #include "minet/components/Requests.h"
 #include "minet/components/Responses.h"
 #include "minet/core/HttpContext.h"
-#include "minet/core/IRequestHandler.h"
-#include "minet/utils/Http.h"
+#include "minet/common/Http.h"
+
+#include <functional>
 
 MINET_BEGIN
 

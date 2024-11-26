@@ -1,4 +1,5 @@
-#include "minet/utils/Native.h"
+#include "utils/Native.h"
+
 #include <unordered_map>
 
 MINET_BEGIN

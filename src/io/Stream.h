@@ -1,3 +1,8 @@
+/**
+ * @author Tony S.
+ * @details Stream interface and implementations.
+ */
+
 #pragma once
 
 #include <sys/types.h> // ssize_t

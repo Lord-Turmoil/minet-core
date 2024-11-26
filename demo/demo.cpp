@@ -19,7 +19,7 @@ static void echo(const TextRequest& request, JsonResponse& response)
 
 int main(int argc, char* argv[])
 {
-    auto builder = WebHostBuilder::Create();
+    Ref<WebHostBuilder> builder = WebHostBuilder::Create();
 
     // Use custom app settings if provided.
     if (argc == 2)

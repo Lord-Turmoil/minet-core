@@ -1,3 +1,8 @@
+/**
+ * @author Tony S.
+ * @details Interface for request handler.
+ */
+
 #pragma once
 
 #include "minet/common/Base.h"
@@ -7,7 +12,7 @@ MINET_BEGIN
 struct HttpContext;
 
 /**
- * @brief Interface for request handler.
+ * @brief
  * Request handler is responsible for handling incoming HTTP requests.
  */
 class IRequestHandler

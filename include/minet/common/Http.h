@@ -1,3 +1,8 @@
+/**
+ * @author Tony S.
+ * @details Basic definitions for HTTP protocol.
+ */
+
 #pragma once
 
 #include "minet/common/Base.h"

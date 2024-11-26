@@ -1,3 +1,8 @@
+/**
+ * @author Tony S.
+ * @details Base definitions and macros.
+ */
+
 #pragma once
 
 #include <memory>
