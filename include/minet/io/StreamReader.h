@@ -21,6 +21,10 @@ public:
     StreamReader& operator=(const StreamReader& other) = delete;
     StreamReader& operator=(StreamReader&& other) noexcept = delete;
 
+    /**
+     * @brief Read one character from the stream.
+     * @return -1 on EOF, otherwise the char read.
+     */
     virtual int Read() = 0;
     virtual ssize_t Read(char* buffer, size_t length) = 0;
 

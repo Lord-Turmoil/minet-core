@@ -2,6 +2,7 @@
 
 #include <unordered_map>
 #include <vector>
+#include <string>
 #include "minet/common/Base.h"
 
 MINET_BEGIN

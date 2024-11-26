@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include "minet/io/Stream.h"
 
 MINET_BEGIN

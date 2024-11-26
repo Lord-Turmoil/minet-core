@@ -1,5 +1,6 @@
 #pragma once
 
+#include <sys/types.h> // ssize_t
 #include <vector>
 #include "minet/common/Base.h"
 

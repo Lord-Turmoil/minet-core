@@ -22,14 +22,14 @@ BufferedStreamReader::~BufferedStreamReader()
 int BufferedStreamReader::Read()
 {
     _Flush();
-    return IsEof() ? EOF : *_head++;
+    return IsEof() ? -1 : *_head++;
 }
 
 ssize_t BufferedStreamReader::Read(char* buffer, size_t length)
 {
     if (IsEof())
     {
-        return EOF;
+        return -1;
     }
 
     size_t remaining = length;

@@ -144,7 +144,7 @@ void RequestParser::_NextToken()
     static constexpr char delimiters[] = " :\r\n";
 
     int ch = _Next();
-    if (ch == EOF)
+    if (ch == -1)
     {
         _currentToken.Type = RequestTokenType::End;
         return;
@@ -178,12 +178,12 @@ void RequestParser::_NextToken()
 
     _currentToken.Type = RequestTokenType::String;
     _currentToken.Value.clear();
-    while ((ch != EOF) && (strchr(delimiters, ch) == nullptr))
+    while ((ch != -1) && (strchr(delimiters, ch) == nullptr))
     {
         _currentToken.Value.push_back(static_cast<char>(ch));
         ch = _Next();
     }
-    if (ch != EOF)
+    if (ch != -1)
     {
         _Rewind(static_cast<char>(ch));
     }
@@ -199,7 +199,7 @@ void RequestParser::_NextString()
     static constexpr char delimiters[] = "\r\n";
 
     int ch = _Next();
-    if (ch == EOF)
+    if (ch == -1)
     {
         _currentToken.Type = RequestTokenType::End;
         return;
@@ -209,7 +209,7 @@ void RequestParser::_NextString()
     {
         ch = _Next();
     }
-    if (ch == EOF)
+    if (ch == -1)
     {
         _currentToken.Type = RequestTokenType::End;
         return;
@@ -231,12 +231,12 @@ void RequestParser::_NextString()
 
     _currentToken.Type = RequestTokenType::String;
     _currentToken.Value.clear();
-    while ((ch != EOF) && (strchr(delimiters, ch) == nullptr))
+    while ((ch != -1) && (strchr(delimiters, ch) == nullptr))
     {
         _currentToken.Value.push_back(static_cast<char>(ch));
         ch = _Next();
     }
-    if (ch != EOF)
+    if (ch != -1)
     {
         _Rewind(static_cast<char>(ch));
     }

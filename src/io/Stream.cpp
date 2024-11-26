@@ -50,7 +50,7 @@ ssize_t BufferInputStream::Read(char* buffer, size_t length)
 {
     if (_offset >= _buffer.size())
     {
-        return EOF;
+        return -1;
     }
 
     size_t size = std::min(length, _buffer.size() - _offset);

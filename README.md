@@ -6,6 +6,8 @@
 
 ---
 
+[![Build-and-Test](https://github.com/Lord-Turmoil/minet-core/actions/workflows/build-and-test.yml/badge.svg?branch=main)](https://github.com/Lord-Turmoil/minet-core/actions/workflows/build-and-test.yml)
+
 # Prologue
 
 **minet core** is a C++ HTTP server library that mimics the design of ASP.NET Core. It is designed to be a lightweight, high-performance, and easy-to-use library for building web applications in C++.

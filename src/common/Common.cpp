@@ -1,5 +1,5 @@
 #include <algorithm>
-
+#include <cctype>
 #include "minet/common/Log.h"
 
 MINET_BEGIN
