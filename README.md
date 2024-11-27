@@ -22,6 +22,9 @@
 > [!NOTE]
 > Before you move on, ensure you have CMake and your C++ compiler supports C++ 17.🫡
 
+> [!WARNING]
+> If you build **minet-core** with Debug configuration on Ubuntu 20.04, you may get linker error saying missing `libtsan_preinit.o`. Check [(TSAN) /usr/bin/ld can't find libtsan_preinit.o](https://stackoverflow.com/questions/77858687/tsan-usr-bin-ld-cant-find-libtsan-preinit-o) for solutions.
+
 ## Prepare the Repository
 
 **minet-core** relies on some third-party libraries, you can clone it with the following command.

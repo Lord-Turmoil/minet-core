@@ -20,21 +20,31 @@ static void _SignalHandler(int sig);
 
 int SetSignalHandler(int sig, const std::function<void()>& handler, bool once)
 {
-    sSignalHandlers[sig] = { sig, once, handler };
-    if (auto r = signal(sig, _SignalHandler); r == SIG_ERR)
+    struct sigaction act;
+    act.sa_handler = _SignalHandler;
+    sigemptyset(&act.sa_mask);
+    act.sa_flags = SA_SIGINFO;
+    if (once)
     {
-        return -1;
+        act.sa_flags |= SA_RESETHAND;
     }
+    MINET_TRY(sigaction(sig, &act, nullptr));
+
+    sSignalHandlers[sig] = { sig, once, handler };
+
     return 0;
 }
 
 int RemoveSignalHandler(int sig)
 {
     sSignalHandlers.erase(sig);
-    if (auto r = signal(sig, SIG_DFL); r == SIG_ERR)
-    {
-        return -1;
-    }
+
+    struct sigaction act;
+    act.sa_handler = SIG_DFL;
+    sigemptyset(&act.sa_mask);
+    act.sa_flags = SA_SIGINFO;
+    MINET_TRY(sigaction(sig, &act, nullptr));
+
     return 0;
 }
 
@@ -50,11 +60,6 @@ void _SignalHandler(int sig)
     if (it->second.Once)
     {
         sSignalHandlers.erase(it);
-    }
-    else
-    {
-        // FIXME: Error omitted.
-        signal(sig, _SignalHandler);
     }
 }
 

@@ -20,7 +20,7 @@
         "loggers": {
             "Demo": {
                 "level": "Debug",
-                "pattern": "%^[%Y-%m-%d %H:%M:%S] %l [%6n]: %v%$",
+                "pattern": "[%Y-%m-%d %H:%M:%S] %^%l%$ [%6n]: %v",
                 "sinks": [
                     {
                         "file": "stdout"
