@@ -14,7 +14,8 @@ TEST_CASE("ThreadPool")
     std::packaged_task<int()> tasks[TASK_NUM];
 
     // Make it busier?
-    ThreadPool pool(2, TASK_NUM / 2);
+    unsigned int threads = HardwareConcurrency();
+    ThreadPool pool(threads, TASK_NUM / threads);
     for (int i = 0; i < TASK_NUM; i++)
     {
         tasks[i] = std::packaged_task<int()>([i]() {
@@ -29,7 +30,6 @@ TEST_CASE("ThreadPool")
         // clang-format off
         CHECK_EQ(pool.Submit([&tasks, i]() {
             tasks[i]();
-            return i;
         }), true);
         // clang-format on
     }

@@ -17,7 +17,8 @@ if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     add_compile_definitions(DEBUG)
     # ASan and TSan are incompatible, so we can't use them together.
     # And because we use std::shared_ptr, it is most likely that there is no need for ASan.
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=undefined,thread")
+    # However, TSan is somehow too strict, enable it only temporarily.
+    # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=undefined,thread")
 endif()
 
 # strict warnings

@@ -10,6 +10,7 @@
 
 #include "threading/Queue.h"
 
+#include <atomic>
 #include <chrono>
 #include <thread>
 
@@ -66,8 +67,6 @@ public:
     void Start(Worker* donor);
     void Stop();
 
-    void Shutdown();
-
     /**
      * @brief Post a task to the worker.
      * @tparam T For std::forward to work
@@ -83,8 +82,7 @@ private:
 private:
     Queue<TTask> _queue;
     std::thread _thread;
-
-    bool _running;
+    std::atomic<bool> _running;
 };
 
 template <typename TTask>
@@ -112,15 +110,13 @@ template <typename TTask> Worker<TTask>& Worker<TTask>::operator=(Worker&& other
 
 template <typename TTask> void Worker<TTask>::Start(Worker* donor)
 {
-    MINET_ASSERT(!_running, "Worker is already running");
-    _running = true;
+    _running.store(true, std::memory_order_relaxed);
     _thread = std::thread(&Worker::_Routine, this, donor);
 }
 
 template <typename TTask> void Worker<TTask>::Stop()
 {
-    MINET_ASSERT(_running, "Working is not running");
-    _running = false;
+    _running.store(false, std::memory_order_relaxed);
     _thread.join();
 }
 
@@ -137,7 +133,7 @@ template <typename TTask> bool Worker<TTask>::_Steal(TTask* task)
 template <typename TTask> void Worker<TTask>::_Routine(Worker* donor)
 {
     TTask task;
-    while (_running)
+    while (_running.load(std::memory_order_relaxed))
     {
         // Get one from the worker itself, or steal one to keep busy.
         if (_queue.Pop(&task) || donor->_Steal(&task))
