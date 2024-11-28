@@ -19,14 +19,14 @@ BasicServer::~BasicServer()
     _CloseSocket();
 }
 
-Ref<Task> BasicServer::StartAsync()
+Ref<threading::Task> BasicServer::StartAsync()
 {
     _logger->Info("Starting {} server on port {}", Name(), _config->Port);
 
     if (_isRunning)
     {
         _logger->Warn("Server is already running");
-        return Task::Completed();
+        return threading::Task::Completed();
     }
 
     _OpenSocket();
@@ -34,17 +34,17 @@ Ref<Task> BasicServer::StartAsync()
     if (!_listenFd)
     {
         _logger->Error("Failed to listen on port");
-        return Task::Completed();
+        return threading::Task::Completed();
     }
 
     if (!_onConnectionCallback)
     {
         _logger->Error("OnConnection callback is not set");
-        return Task::Completed();
+        return threading::Task::Completed();
     }
 
     _isRunning = true;
-    Ref<Task> task = Task::Create(BIND_FN(_Serve))->StartAsync();
+    Ref<threading::Task> task = threading::Task::Create(BIND_FN(_Serve))->StartAsync();
     _logger->Info("Server started");
 
     return task;

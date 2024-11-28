@@ -5,7 +5,6 @@
 MINET_BEGIN
 
 class Logger;
-class Task;
 
 /**
  * @brief The default server implementation.
@@ -25,7 +24,7 @@ public:
      * @brief Start the server asynchronously.
      * @return The async task.
      */
-    Ref<Task> StartAsync() override;
+    Ref<threading::Task> StartAsync() override;
 
     void Stop() override;
 

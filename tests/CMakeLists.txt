@@ -1,5 +1,5 @@
 set(LIBRARIES minetcore)
-set(MINET_TESTS ParserTest WrapperTest)
+set(MINET_TESTS ParserTest WrapperTest ThreadPoolTest)
 
 foreach(test ${MINET_TESTS})
     add_executable(${test} doctest.cpp ${test}.cpp)

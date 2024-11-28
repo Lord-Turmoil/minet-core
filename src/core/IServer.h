@@ -14,7 +14,10 @@
 MINET_BEGIN
 
 struct HttpContext;
+namespace threading
+{
 class Task;
+}
 
 /**
  * @brief Configuration for server.
@@ -48,7 +51,7 @@ public:
     IServer();
     virtual ~IServer() = default;
 
-    virtual Ref<Task> StartAsync() = 0;
+    virtual Ref<threading::Task> StartAsync() = 0;
     virtual void Stop() = 0;
 
     virtual void SetOnConnection(const OnConnectionCallback& callback) = 0;

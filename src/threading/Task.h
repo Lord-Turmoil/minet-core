@@ -14,6 +14,9 @@
 
 MINET_BEGIN
 
+namespace threading
+{
+
 /**
  * @brief Basic task has no return value.
  */
@@ -190,5 +193,7 @@ template <typename TResult> TResult ValueTask<TResult>::Run()
 {
     return StartAsync()->Await();
 }
+
+} // namespace threading
 
 MINET_END
