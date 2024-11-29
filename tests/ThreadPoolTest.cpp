@@ -4,38 +4,42 @@
 
 #include "doctest.h"
 
+#include <array>
 #include <future>
+
+struct task_t
+{
+    std::packaged_task<int()> task;
+    std::future<int> result;
+};
+
+void func(task_t* task)
+{
+    std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    task->task();
+}
 
 TEST_CASE("ThreadPool")
 {
     using namespace minet::threading;
     static constexpr int TASK_NUM = 1024;
-    std::future<int> results[TASK_NUM];
-    std::packaged_task<int()> tasks[TASK_NUM];
 
-    // Make it busier?
-    unsigned int threads = HardwareConcurrency();
+    std::array<task_t, TASK_NUM> tasks;
+
+    unsigned threads = HardwareConcurrency();
     ThreadPool pool(threads, TASK_NUM / threads);
+
+    task_t* task = tasks.data();
     for (int i = 0; i < TASK_NUM; i++)
     {
-        tasks[i] = std::packaged_task<int()>([i]() {
-            std::this_thread::sleep_for(std::chrono::milliseconds(1));
-            return i;
-        });
-        results[i] = tasks[i].get_future();
+        task->task = std::packaged_task<int()>([i]() { return i; });
+        task->result = tasks[i].task.get_future();
+        pool.Submit([task]() { func(task); });
+        task++;
     }
 
     for (int i = 0; i < TASK_NUM; i++)
     {
-        // clang-format off
-        CHECK_EQ(pool.Submit([&tasks, i]() {
-            tasks[i]();
-        }), true);
-        // clang-format on
-    }
-
-    for (int i = 0; i < TASK_NUM; i++)
-    {
-        CHECK_EQ(results[i].get(), i);
+        CHECK(tasks[i].result.get() == i);
     }
 }
