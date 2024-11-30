@@ -34,6 +34,11 @@ class WebHostBuilder final : public std::enable_shared_from_this<WebHostBuilder>
 public:
     WebHostBuilder(Private);
 
+    WebHostBuilder(const WebHostBuilder&) = delete;
+    WebHostBuilder& operator=(const WebHostBuilder&) = delete;
+    WebHostBuilder(WebHostBuilder&&) noexcept = default;
+    WebHostBuilder& operator=(WebHostBuilder&&) noexcept = default;
+
     static Ref<WebHostBuilder> Create();
 
     /**

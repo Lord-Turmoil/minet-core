@@ -31,9 +31,9 @@ public:
     void Run() const;
 
     WebHost(const WebHost&) = delete;
-    WebHost(WebHost&&) noexcept = delete;
     WebHost& operator=(const WebHost&) = delete;
-    WebHost& operator=(WebHost&&) noexcept = delete;
+    WebHost(WebHost&&) noexcept = default;
+    WebHost& operator=(WebHost&&) noexcept = default;
 
 private:
     WebHost(const Ref<IServer>& server, const Ref<IRequestDispatcher>& dispatcher,
