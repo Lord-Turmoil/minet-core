@@ -76,15 +76,21 @@ int main()
 
 ## The Demo
 
-The example above might be a little too simple. For a more comprehensive demonstration, you can see the demo server under `demo/`. To see it live, use the following commands. It will run the demo server, and send some dummy requests to it.
+The example above might be a little too simple. For a more comprehensive demonstration, you can see the demo server under `demo/`. To see it live, use the following commands. It will run the demo server, and send some dummy requests to it. There are two server options available. And the client will launch 4 processes to send requests at the same time.
 
 ```bash
 # build and run the demo server
-./script/demo.sh server
+./script/demo.sh server        # run with Basic server
+./script/demo.sh server mayhem # run with Mayhem server
 
 # in another terminal
-./script/demo.sh client
+./script/demo.sh client        # 4 processes, each sending 10 requests
+./script/demo.sh client N      # 4 processes, each sending N requests
 ```
+
+Basic server handles requests in one thread, so you'll see the client return one response at a time. Mayhem server handles requests asynchronously, so you'll see a significant speedup in the client.
+
+The configuration files are also provided in `demo/`, you can modify them to see the effects.
 
 > [!TIP]
 >

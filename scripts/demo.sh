@@ -63,7 +63,7 @@ function run_client() {
             send_requests $ROUND
         fi
     else
-        ROUND=${1:-5}
+        ROUND=${1:-10}
         bash $0 client _ 2 $ROUND
     fi
 }
@@ -78,4 +78,7 @@ elif [ "$option" == "client" ]; then
     run_client $@
 else
     echo "Usage: $0 [server|client] [args]"
+    echo "  server        - run with Basic server"
+    echo "  server mayhem - run with Mayhem server"
+    echo "  client N      - 4 processes, each sends N requests"
 fi
