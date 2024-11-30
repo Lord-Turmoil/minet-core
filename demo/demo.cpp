@@ -7,12 +7,14 @@ Ref<Logger> logger;
 static void ping(const TextRequest& request, TextResponse& response)
 {
     logger->Info("Ping request received:\n-----\n{}\n-----", request.Request().ToString());
+    std::this_thread::sleep_for(std::chrono::milliseconds(200));
     response.Text().append("pong");
 }
 
 static void echo(const TextRequest& request, JsonResponse& response)
 {
     logger->Info("Echo request received:\n-----\n{}\n-----", request.Request().ToString());
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
     response.Json()["status"] = "ok";
     response.Json()["message"] = request.Text();
 }

@@ -141,6 +141,8 @@ The server settings include the `name` of the server, and the `port` to listen o
 {
     "server": {
         "name": "Basic",
+        "threads": 4,
+        "capacity": 1024,
         "port": 5000
     }
 }
@@ -150,6 +152,8 @@ Notably, `name` specifies which server to use. Currently, **minet-core** has two
 
 - `Basic`: Default option, a blocking server that handles requests synchronously.
 - `Mayhem`: An experimental server that handles requests asynchronously.
+
+If you choose to use `Basic` server, then `threads` and `capacity` are ignored. For `Mayhem` server, `threads` is the number of worker threads, and `capacity` is the maximum requests queued on each worker thread.
 
 ### Logging
 

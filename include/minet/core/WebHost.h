@@ -30,6 +30,11 @@ public:
      */
     void Run() const;
 
+    WebHost(const WebHost&) = delete;
+    WebHost(WebHost&&) noexcept = delete;
+    WebHost& operator=(const WebHost&) = delete;
+    WebHost& operator=(WebHost&&) noexcept = delete;
+
 private:
     WebHost(const Ref<IServer>& server, const Ref<IRequestDispatcher>& dispatcher,
             const Ref<mioc::ServiceContainer>& container);

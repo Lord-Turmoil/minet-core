@@ -34,6 +34,26 @@ ThreadPool::~ThreadPool()
     }
 }
 
+ThreadPool::ThreadPool(ThreadPool&& other) noexcept
+{
+    _threads = other._threads;
+    _running = other._running;
+    _workers = std::move(other._workers);
+    _next.store(other._next.load());
+}
+
+ThreadPool& ThreadPool::operator=(ThreadPool&& other) noexcept
+{
+    if (this != &other)
+    {
+        _threads = other._threads;
+        _running = other._running;
+        _workers = std::move(other._workers);
+        _next.store(other._next.load());
+    }
+    return *this;
+}
+
 } // namespace threading
 
 MINET_END

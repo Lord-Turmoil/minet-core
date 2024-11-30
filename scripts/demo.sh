@@ -13,20 +13,24 @@ function run_server() {
     fi
 
     BIN=./build-$PROFILE/demo/minet-demo
-    ARGS=${1:-"demo/appsettings.jsonc"}
     if [ ! -f "$BIN" ]; then
         echo "Binary file not found: $BIN"
         exit 1
     fi
+
+    ARGS="demo/appsettings.jsonc"
+    if [ "$1" == "mayhem" ]; then
+        ARGS="demo/appsettings.mayhem.jsonc"
+    fi
+    
     echo -e "\033[0;36m$BIN $ARGS\033[0m"
     # do not check for signal-unsafe call, as it is a desired behavior
     TSAN_OPTIONS="report_signal_unsafe=0" $BIN $ARGS
 }
 
-function run_client() {
-    ROUND=${1:-10}
+function send_requests() {
     BASE_URL="localhost:5000"
-
+    ROUND=${1:-10}
     start=`date +%s`
     for (( i = 1; i <= $ROUND; i++ )); do
         rand=$(( RANDOM % 2 ))  # choose 0 or 1
@@ -45,6 +49,23 @@ function run_client() {
     done
     end=`date +%s`
     echo "Sent $ROUND requests in $((end-start)) seconds"
+}
+
+function run_client() {
+    if [ "$1" == "_" ]; then
+        shift
+        LEVEL=${1:?"Expect level"}
+        ROUND=${2:?"Expect round"}
+        if [ $LEVEL -gt 0 ]; then
+            bash $0 client _ $((LEVEL-1)) $ROUND &
+            bash $0 client _ $((LEVEL-1)) $ROUND &
+        else
+            send_requests $ROUND
+        fi
+    else
+        ROUND=${1:-5}
+        bash $0 client _ 2 $ROUND
+    fi
 }
 
 option=$1

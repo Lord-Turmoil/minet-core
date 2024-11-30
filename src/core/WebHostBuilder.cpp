@@ -5,6 +5,7 @@
 
 #include "components/BasicServer.h"
 #include "components/LoggerFactory.h"
+#include "components/MayhemServer.h"
 #include "components/RequestDispatcher.h"
 
 #include <fstream>
@@ -158,13 +159,19 @@ void WebHostBuilder::_InitializeComponents()
     if (serverConfig->Name == BasicServer::Identifier())
     {
         _container->AddSingleton<IServer, BasicServer, ServerConfig>();
-        _container->AddSingleton<IRequestDispatcher, RequestDispatcher>();
+    }
+    else if (serverConfig->Name == MayhemServer::Identifier())
+    {
+        _container->AddSingleton<IServer, MayhemServer, ServerConfig>();
     }
     else
     {
         std::cerr << "Unknown server: " << serverConfig->Name << '\n';
         exit(3);
     }
+
+    // Request dispatcher
+    _container->AddSingleton<IRequestDispatcher, RequestDispatcher>();
 
     // Logger factory
     _container->AddSingleton<ILoggerFactory, LoggerFactory, LoggerConfig>();

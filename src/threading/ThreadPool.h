@@ -45,6 +45,11 @@ public:
     explicit ThreadPool(unsigned int threads, size_t capacity = 1024u);
     ~ThreadPool();
 
+    ThreadPool(const ThreadPool&) = delete;
+    ThreadPool& operator=(const ThreadPool&) = delete;
+    ThreadPool(ThreadPool&& other) noexcept;
+    ThreadPool& operator=(ThreadPool&& other) noexcept;
+
     /**
      * @brief Submit a task to the thread pool. Used the naming in Java.
      * @tparam T In order to use std::forward.

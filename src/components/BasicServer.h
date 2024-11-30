@@ -2,9 +2,9 @@
 
 #include "core/IServer.h"
 
-MINET_BEGIN
+#include "utils/Network.h"
 
-class Logger;
+MINET_BEGIN
 
 /**
  * @brief The default server implementation.
@@ -15,15 +15,16 @@ public:
     explicit BasicServer(const Ref<ServerConfig>& config);
     ~BasicServer() override;
 
+    BasicServer(const BasicServer&) = delete;
+    BasicServer& operator=(const BasicServer&) = delete;
+    BasicServer(BasicServer&&) noexcept = default;
+    BasicServer& operator=(BasicServer&&) noexcept = default;
+
     static const char* Identifier()
     {
         return "Basic";
     }
 
-    /**
-     * @brief Start the server asynchronously.
-     * @return The async task.
-     */
     Ref<threading::Task> StartAsync() override;
 
     void Stop() override;
@@ -35,23 +36,23 @@ public:
 
     const char* Name() const override
     {
-        return "Minet Basic";
+        return Identifier();
     }
+
+protected:
+    virtual void _OnNewConnection(const network::AcceptData& data);
+    void _DecorateContext(const Ref<HttpContext>& context);
 
 private:
     void _Serve();
-    void _DecorateContext(const Ref<HttpContext>& context);
 
     void _OpenSocket();
     void _CloseSocket();
 
-private:
+protected:
     Ref<ServerConfig> _config;
-
     OnConnectionCallback _onConnectionCallback;
-
     int _listenFd;
-
     bool _isRunning;
 };
 

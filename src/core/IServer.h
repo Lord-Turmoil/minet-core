@@ -34,6 +34,16 @@ struct ServerConfig
      * @brief The port number to listen on.
      */
     uint16_t Port;
+
+    /**
+     * @brief The number of threads to use if the server supports multi-threading.
+     */
+    unsigned Threads;
+
+    /**
+     * @brief Request queue size for each thread.
+     */
+    size_t Capacity;
 };
 
 /**
@@ -51,7 +61,17 @@ public:
     IServer();
     virtual ~IServer() = default;
 
+    IServer(const IServer&) = delete;
+    IServer& operator=(const IServer&) = delete;
+    IServer(IServer&&) noexcept = default;
+    IServer& operator=(IServer&&) noexcept = default;
+
+    /**
+     * @brief Start the server asynchronously.
+     * @return The async task.
+     */
     virtual Ref<threading::Task> StartAsync() = 0;
+
     virtual void Stop() = 0;
 
     virtual void SetOnConnection(const OnConnectionCallback& callback) = 0;

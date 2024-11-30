@@ -19,6 +19,7 @@ if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     # And because we use std::shared_ptr, it is most likely that there is no need for ASan.
     # However, TSan is somehow too strict, enable it only temporarily.
     # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=undefined,thread")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address,undefined")
 endif()
 
 # strict warnings
