@@ -34,7 +34,9 @@ file(GLOB_RECURSE SRC_LIST CONFIGURE_DEPENDS "${LIBRARY_BASE_PATH}/src/*.cpp")
 add_library(${BINARY_NAME} ${SRC_LIST})
 
 # target properties
-target_include_directories(${BINARY_NAME} PUBLIC ${PUBLIC_INCLUDE_DIRECTOREIS})
+target_include_directories(${BINARY_NAME} PUBLIC
+    "$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include>"
+    "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>")
 target_link_libraries(${BINARY_NAME} mioc spdlog nlohmann_json)
 
 # install properties
