@@ -236,6 +236,6 @@ You may notice that, in **minet-core**, some classes have private constructors, 
 
 **minet-core** uses some open source libraries, thanks to their great work!🥰
 
-- [nlohmann/json](https://github.com/nlohmann/json)
-- [gabime/spdlog](https://github.com/gabime/spdlog)
-- [Lord-Turmoil/MinIoC](https://github.com/Lord-Turmoil/MinIoC)
+- [nlohmann/json](https://github.com/nlohmann/json) v3.11.3
+- [gabime/spdlog](https://github.com/gabime/spdlog) v1.15.0
+- [Lord-Turmoil/MinIoC](https://github.com/Lord-Turmoil/MinIoC) v1.2.2
