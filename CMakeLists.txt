@@ -10,6 +10,10 @@ project(${PROJECT_NAME}
     DESCRIPTION "A mini HTTP server library with C++"
     LANGUAGES CXX)
 
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Release)
+endif()
+
 # dependencies
 add_subdirectory(libs)
 
@@ -24,6 +28,10 @@ endif()
 
 # strict warnings
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror")
+
+# optimization flags
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
 
 # library properties
 set(LIBRARY_BASE_PATH "${PROJECT_SOURCE_DIR}")

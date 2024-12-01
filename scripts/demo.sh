@@ -20,7 +20,11 @@ function run_server() {
 
     ARGS="demo/appsettings.jsonc"
     if [ "$1" == "mayhem" ]; then
-        ARGS="demo/appsettings.mayhem.jsonc"
+        echo -e "\033[0;36mRun with Mayhem server...\033[0m"
+        ARGS="demo/appsettings.mayhem.json"
+    elif [ "$1" == "threaded" ]; then
+        echo -e "\033[0;36mRun with Threaded server...\033[0m"
+        ARGS="demo/appsettings.threaded.json"
     fi
     
     echo -e "\033[0;36m$BIN $ARGS\033[0m"
@@ -85,7 +89,8 @@ elif [ "$option" == "client" ]; then
     run_client $@
 else
     echo "Usage: $0 [server|client] [args]"
-    echo "  server        - run with Basic server"
-    echo "  server mayhem - run with Mayhem server"
-    echo "  client N      - 4 processes, each sends N requests"
+    echo "  server          - run with Basic server"
+    echo "  server threaded - run with Threaded server"
+    echo "  server mayhem   - run with Mayhem server"
+    echo "  client N        - 4 processes, each sends N requests"
 fi

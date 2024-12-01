@@ -74,9 +74,12 @@ public:
 
     virtual void Stop() = 0;
 
-    virtual void SetOnConnection(const OnConnectionCallback& callback) = 0;
-
     virtual const char* Name() const = 0;
+
+    void SetOnConnection(const OnConnectionCallback& callback)
+    {
+        _onConnectionCallback = callback;
+    }
 
 private:
     // Only used by WebHostBuilder.
@@ -84,6 +87,7 @@ private:
 
 protected:
     Ref<Logger> _logger;
+    OnConnectionCallback _onConnectionCallback;
 };
 
 /**

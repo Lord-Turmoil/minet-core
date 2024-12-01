@@ -1,4 +1,4 @@
-#include "components/BasicServer.h"
+#include "components/ThreadedServer.h"
 
 #include "minet/common/Assert.h"
 #include "minet/components/Logger.h"
@@ -9,16 +9,12 @@
 
 MINET_BEGIN
 
-BasicServer::BasicServer(const Ref<ServerConfig>& config) : _config(config), _listenFd(0), _isRunning(false)
+ThreadedServer::ThreadedServer(const Ref<ServerConfig>& config)
+    : _config(config), _threadPool(config->Threads, config->Capacity), _listenFd(0), _isRunning(false)
 {
 }
 
-BasicServer::~BasicServer()
-{
-    _CloseSocket();
-}
-
-Ref<threading::Task> BasicServer::StartAsync()
+Ref<threading::Task> ThreadedServer::StartAsync()
 {
     _logger->Info("Starting {} server on port {}", Name(), _config->Port);
 
@@ -49,7 +45,7 @@ Ref<threading::Task> BasicServer::StartAsync()
     return task;
 }
 
-void BasicServer::Stop()
+void ThreadedServer::Stop()
 {
     _logger->Info("Shutting down {} server", Name());
     if (!_isRunning)
@@ -59,24 +55,17 @@ void BasicServer::Stop()
     _isRunning = false;
 }
 
-void BasicServer::_Serve()
+void ThreadedServer::_Serve()
 {
     network::AcceptData data;
-    Ref<HttpContext> context;
     while (_isRunning)
     {
         while (AcceptSocket(_listenFd, &data) && _isRunning)
         {
-            int r = CreateHttpContext(data, &context);
-            if (r == 0)
+            if (!_threadPool.Submit([this, data] { _HandleConnection(data); }))
             {
-                _DecorateContext(context);
-                _logger->Debug("New connection from {}", context->Request.Host);
-                _onConnectionCallback(context);
-            }
-            else
-            {
-                _logger->Error("Failed to create HTTP context, error code: {}", r);
+                _logger->Warn("Server overwhelmed, new connection refused");
+                network::CloseSocket(data.SocketFd);
             }
         }
     }
@@ -87,12 +76,27 @@ void BasicServer::_Serve()
     _logger->Info("{} server shut down", Name());
 }
 
-void BasicServer::_DecorateContext(const Ref<HttpContext>& context) const
+void ThreadedServer::_HandleConnection(const network::AcceptData& data)
+{
+    Ref<HttpContext> context;
+    if (int r = CreateHttpContext(data, &context); r == 0)
+    {
+        _DecorateContext(context);
+        _logger->Debug("New connection from {}", context->Request.Host);
+        _onConnectionCallback(context);
+    }
+    else
+    {
+        _logger->Error("Failed to create HTTP context, error code: {}", r);
+    }
+}
+
+void ThreadedServer::_DecorateContext(const Ref<HttpContext>& context) const
 {
     context->Response.Headers["Server"] = Name();
 }
 
-void BasicServer::_OpenSocket()
+void ThreadedServer::_OpenSocket()
 {
     _listenFd = network::OpenSocket(_config->Port);
     if (_listenFd < 0)
@@ -102,7 +106,7 @@ void BasicServer::_OpenSocket()
     }
 }
 
-void BasicServer::_CloseSocket()
+void ThreadedServer::_CloseSocket()
 {
     if (_listenFd == 0)
     {

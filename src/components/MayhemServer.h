@@ -1,15 +1,18 @@
 #pragma once
 
-#include "components/BasicServer.h"
+#include "core/IServer.h"
 
 #include "threading/ThreadPool.h"
+#include "utils/Network.h"
 
 MINET_BEGIN
 
 /**
- * @brief Mayhem server use thread pool for async processing.
+ * @brief Mayhem server uses epoll and thread pool for async processing.
+ * @ref man 7 epoll
+ * @note Well, I guess the manual is not that useless after all.
  */
-class MayhemServer final : public BasicServer
+class MayhemServer final : public IServer
 {
 public:
     explicit MayhemServer(const Ref<ServerConfig>& config);
@@ -25,19 +28,37 @@ public:
         return "Mayhem";
     }
 
+    Ref<threading::Task> StartAsync() override;
+
+    void Stop() override;
+
     const char* Name() const override
     {
         return Identifier();
     }
 
-protected:
-    void _OnNewConnection(const network::AcceptData& data) override;
+private:
+    void _Serve();
+
+    void _HandleConnection(int fd);
+
+    void _DecorateContext(const Ref<HttpContext>& context) const;
+
+    void _OpenSocket();
+    void _CloseSocket();
+
+    void _OpenEpoll();
+    void _CloseEpoll();
+    bool _MonitorFd(int fd, void* data);
 
 private:
-    void _HandleConnection(const network::AcceptData& data);
+    Ref<ServerConfig> _config;
 
-private:
     threading::ThreadPool _threadPool;
+
+    int _listenFd;
+    int _epollFd;
+    bool _isRunning;
 };
 
 MINET_END

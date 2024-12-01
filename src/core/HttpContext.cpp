@@ -30,6 +30,26 @@ int CreateHttpContext(const network::AcceptData& data, Ref<HttpContext>* context
     return ret;
 }
 
+int CreateHttpContext(int fd, Ref<HttpContext>* context)
+{
+    Ref<HttpContext> ctx = CreateRef<HttpContext>();
+    Ref<io::Stream> stream = CreateRef<io::SocketStream>(fd);
+
+    ctx->Request.Host.assign("unknown");
+    ctx->Request.BodyStream = stream;
+
+    ctx->Response.StatusCode = 200;
+    ctx->Response.BodyStream = stream;
+
+    int ret = http::ParseHttpRequest(&ctx->Request);
+    if (ret == 0)
+    {
+        *context = ctx;
+    }
+
+    return ret;
+}
+
 int DestroyHttpContext(const Ref<HttpContext>& context)
 {
     // Even if these two streams can be the same, the stream

@@ -3,10 +3,12 @@
 #include "minet/common/Assert.h"
 #include "minet/core/WebHost.h"
 
-#include "components/BasicServer.h"
 #include "components/LoggerFactory.h"
-#include "components/MayhemServer.h"
 #include "components/RequestDispatcher.h"
+
+#include "components/BasicServer.h"
+#include "components/MayhemServer.h"
+#include "components/ThreadedServer.h"
 
 #include "impl/DefaultHandlers.h"
 
@@ -169,6 +171,10 @@ void WebHostBuilder::_InitializeComponents()
     if (serverConfig->Name == BasicServer::Identifier())
     {
         _container->AddSingleton<IServer, BasicServer, ServerConfig>();
+    }
+    else if (serverConfig->Name == ThreadedServer::Identifier())
+    {
+        _container->AddSingleton<IServer, ThreadedServer, ServerConfig>();
     }
     else if (serverConfig->Name == MayhemServer::Identifier())
     {

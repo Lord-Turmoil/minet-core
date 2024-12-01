@@ -163,12 +163,13 @@ The server settings include the `name` of the server, and the `port` to listen o
 }
 ```
 
-Notably, `name` specifies which server to use. Currently, **minet-core** has two server implementation.
+Notably, `name` specifies which server to use. Currently, **minet-core** has three server implementation.
 
 - `Basic`: Default option, a blocking server that handles requests synchronously.
-- `Mayhem`: An experimental server that handles requests asynchronously.
+- `Threaded`: A server that handles requests in multiple threads with a thread pool.
+- `Mayhem`: An experimental server that handles requests using both epoll and thread pool.
 
-If you choose to use `Basic` server, then `threads` and `capacity` are ignored. For `Mayhem` server, `threads` is the number of worker threads, and `capacity` is the maximum requests queued on each worker thread.
+If you choose to use `Basic` server, then `threads` and `capacity` are ignored. For `Threaded` and `Mayhem` server, `threads` is the number of worker threads, and `capacity` is the maximum requests queued on each worker thread.
 
 ### Logging
 

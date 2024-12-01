@@ -127,6 +127,15 @@ struct HttpContext
 int CreateHttpContext(const network::AcceptData& data, Ref<HttpContext>* context);
 
 /**
+ * @brief Create HTTP context from file descriptor alone.
+ * @param fd The socket file descriptor.
+ * @param context Output new HTTP context.
+ * @return 0 on success, otherwise, see @link ParseHttpRequest.
+ * @warning In this case, the Host field in request will be "unknown".
+ */
+int CreateHttpContext(int fd, Ref<HttpContext>* context);
+
+/**
  * @brief Destroy a HTTP context after handling.
  * @param context The context to destroy.
  * @return 0 on success, otherwise non-zero.
