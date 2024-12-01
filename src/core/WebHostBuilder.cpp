@@ -8,6 +8,7 @@
 #include "components/MayhemServer.h"
 #include "components/RequestDispatcher.h"
 
+#include <cstdlib>
 #include <fstream>
 #include <iostream>
 
@@ -35,6 +36,14 @@ Ref<WebHostBuilder> WebHostBuilder::UseAppSettings(const std::string& path)
     _initialized = true;
 
     _appSettingsPath = path;
+    if (_appSettingsPath == "appsettings.json")
+    {
+        const char* env = std::getenv("MINET_CORE_ENV");
+        if (env)
+        {
+            _appSettingsPath = std::string("appsettings.") + env + ".json";
+        }
+    }
     _InitializeComponents();
 
     return shared_from_this();
