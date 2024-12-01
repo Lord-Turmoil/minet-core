@@ -31,7 +31,6 @@ function run_server() {
 function send_requests() {
     BASE_URL="localhost:5000"
     ROUND=${1:-10}
-    start=`date +%s`
     for (( i = 1; i <= $ROUND; i++ )); do
         rand=$(( RANDOM % 2 ))  # choose 0 or 1
         if [ $rand -eq 0 ]; then
@@ -47,8 +46,6 @@ function send_requests() {
         # rand=$(( RANDOM % 3 ))  # sleep 0-3 seconds
         # sleep $rand
     done
-    end=`date +%s`
-    echo "Sent $ROUND requests in $((end-start)) seconds"
 }
 
 function run_client() {
@@ -58,13 +55,23 @@ function run_client() {
         ROUND=${2:?"Expect round"}
         if [ $LEVEL -gt 0 ]; then
             bash $0 client _ $((LEVEL-1)) $ROUND &
+            c1=$!
             bash $0 client _ $((LEVEL-1)) $ROUND &
+            c2=$!
+            wait $c1
+            wait $c2
         else
             send_requests $ROUND
         fi
     else
         ROUND=${1:-10}
+        start=`date +%s`
+        
         bash $0 client _ 2 $ROUND
+        wait $!
+        
+        end=`date +%s`
+        echo "Sent $((ROUND*4)) ($ROUND * 4) requests in $((end-start)) seconds"
     fi
 }
 
@@ -74,7 +81,9 @@ if [ "$option" == "server" ]; then
     echo -e "\033[0;32mChoose to run server\033[0m"
     run_server $@
 elif [ "$option" == "client" ]; then
-    echo -e "\033[0;32mChoose to run client...\033[0m"
+    if [ "$1" != "_" ]; then
+        echo -e "\033[0;32mChoose to run client...\033[0m"
+    fi
     run_client $@
 else
     echo "Usage: $0 [server|client] [args]"

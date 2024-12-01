@@ -7,10 +7,10 @@
 
 #include "minet/core/IRequestHandler.h"
 
+#include "minet/common/Http.h"
 #include "minet/components/Requests.h"
 #include "minet/components/Responses.h"
 #include "minet/core/HttpContext.h"
-#include "minet/common/Http.h"
 
 #include <functional>
 
@@ -48,13 +48,12 @@ template <typename TResponse> struct ResponseFormatter
  * @tparam TRequest Type of the request.
  * @tparam TResponse Type of the response.
  */
-template <typename TRequest = TextRequest, typename TResponse = TextResponse>
-class RequestHandler final : public IRequestHandler
+template <typename TRequest, typename TResponse> class RequestHandlerImpl final : public IRequestHandler
 {
 public:
     using RequestHandlerFn = std::function<void(const TRequest&, TResponse&)>;
 
-    explicit RequestHandler(RequestHandlerFn handler) : _handler(std::move(handler))
+    explicit RequestHandlerImpl(RequestHandlerFn handler) : _handler(std::move(handler))
     {
     }
 
@@ -76,12 +75,16 @@ public:
 
     static Ref<IRequestHandler> Bind(RequestHandlerFn handler)
     {
-        return CreateRef<RequestHandler>(std::move(handler));
+        return CreateRef<RequestHandlerImpl>(std::move(handler));
     }
 
 private:
     RequestHandlerFn _handler;
 };
+
+using RequestHandler = RequestHandlerImpl<TextRequest, TextResponse>;
+using RestfulHandler = RequestHandlerImpl<JsonRequest, JsonResponse>;
+template <typename TRequest, typename TResponse> using CustomHandler = RequestHandlerImpl<TRequest, TResponse>;
 
 /*
  * ===================================================================

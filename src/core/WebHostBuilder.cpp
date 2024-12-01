@@ -15,8 +15,7 @@ MINET_BEGIN
 
 static void _PrintBanner();
 
-WebHostBuilder::WebHostBuilder(Private)
-    : _appSettingsPath("appsettings.json"), _container(mioc::ServiceContainer::New(true)), _initialized(false)
+WebHostBuilder::WebHostBuilder(Private) : _container(mioc::ServiceContainer::New(true)), _initialized(false)
 {
     _PrintBanner();
 }

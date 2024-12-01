@@ -46,7 +46,7 @@ public:
      * This must be called before any other methods, and it should only be
      * called once.
      */
-    Ref<WebHostBuilder> UseAppSettings(const std::string& path = "");
+    Ref<WebHostBuilder> UseAppSettings(const std::string& path = "appsettings.json");
 
     Ref<WebHostBuilder> Get(const std::string& path, const Ref<IRequestHandler>& handler);
     Ref<WebHostBuilder> Post(const std::string& path, const Ref<IRequestHandler>& handler);

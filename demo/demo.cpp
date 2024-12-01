@@ -37,8 +37,8 @@ int main(int argc, char* argv[])
     logger = builder->GetLogger("Demo");
 
     // Register handlers and run the server.
-    builder->Get("/ping", RequestHandler<>::Bind(ping))
-        ->Post("/echo", RequestHandler<TextRequest, JsonResponse>::Bind(echo))
+    builder->Get("/ping", RequestHandler::Bind(ping))
+        ->Post("/echo", CustomHandler<TextRequest, JsonResponse>::Bind(echo))
         ->Build()
         ->Run();
 
