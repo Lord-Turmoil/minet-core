@@ -23,7 +23,7 @@
 > Before you move on, ensure you have CMake and your C++ compiler supports C++ 17.🫡
 
 > [!WARNING]
-> If you build **minet-core** with Debug configuration on Ubuntu 20.04, you may get linker error saying missing `libtsan_preinit.o`. Check [(TSAN) /usr/bin/ld can't find libtsan_preinit.o](https://stackoverflow.com/questions/77858687/tsan-usr-bin-ld-cant-find-libtsan-preinit-o) for solutions.
+> If you build **minet-core** with TSan (Thread Sanitizer) on Ubuntu 20.04, you may get linker error saying missing `libtsan_preinit.o`. Check [(TSAN) /usr/bin/ld can't find libtsan_preinit.o](https://stackoverflow.com/questions/77858687/tsan-usr-bin-ld-cant-find-libtsan-preinit-o) for solutions.
 
 ## Prepare the Repository
 
@@ -60,9 +60,9 @@ int main()
 {
     WebHostBuilder::Create()
         ->UseAppSettings()
-        ->Get("/ping", RequestHandler<>::Bind(
+        ->Get("/ping", RequestHandler::Bind(
             [](const TextRequest& request, TextResponse& response) {
-                response.Text().append("pong"); 
+                response.Text().assign("pong"); 
             }))
         ->Build()
         ->Run();
@@ -114,17 +114,26 @@ Request handler is where you write the server logic. It takes the request and re
 using RequestHandlerFn = std::function<void(const TRequest&, TResponse&)>;
 ```
 
-To create a request handler, you need to use `RequestHandler<TRequest, TResponse>::Bind()`. By default, it will use `TextRequest` and `TextResponse`. Then, you can register endpoints like this.
+**minet-core** provides a convenient way to create request handlers by using predefined templates. For plain text request and response, you can use `RequestHandler` directly. For JSON request and response, you can use `RestfulHandler`. If request and response types are different, you can use `CustomHandler` instead. Below are their definitions.
 
 ```cpp
-void ping(const TextRequest& request, TextResponse& response);
-void echo(const TextRequest& request, JsonResponse& response);
+using RequestHandler = RequestHandlerImpl<TextRequest, TextResponse>;
+using RestfulHandler = RequestHandlerImpl<JsonRequest, JsonResponse>;
+template <typename TRequest, typename TResponse>
+using CustomHandler = RequestHandlerImpl<TRequest, TResponse>;
+```
+
+```cpp
+void text(const TextRequest& request, TextResponse& response);
+void json(const JsonRequest& request, JsonResponse& response);
+void custom(const TextRequest& request, JsonResponse& response);
 
 // create WebHostBuilder
 
 builder
-    ->Get("/ping", RequestHandler<>::Bind(ping))
-    ->Post("/echo", RequestHandler<TextRequest, JsonResponse>::Bind(echo));
+    ->Get("/text", RequestHandler::Bind(text))
+    ->Post("/json", RestfulHandler::Bind(json))
+    ->Post("/custom", CustomHandler::Bind(custom));
 ```
 
 See, isn't it easy?😉

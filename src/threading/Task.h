@@ -111,7 +111,7 @@ template <typename TRoutine> Ref<Task> Task::Create(TRoutine&& routine)
 
 inline Ref<Task> Task::Completed()
 {
-    return CreateRef<Task>([] {}, Private());
+    return CreateRef<Task>([] {}, Private())->StartAsync();
 }
 
 inline Ref<Task> Task::StartAsync()
@@ -170,7 +170,7 @@ Ref<ValueTask<TResult>> ValueTask<TResult>::Create(TRoutine&& routine)
 
 template <typename TResult> Ref<ValueTask<TResult>> ValueTask<TResult>::Completed(const TResult& result)
 {
-    return CreateRef<ValueTask>([result] { return result; }, Private());
+    return CreateRef<ValueTask>([result] { return result; }, Private())->StartAsync();
 }
 
 template <typename TResult> Ref<ValueTask<TResult>> ValueTask<TResult>::StartAsync()
