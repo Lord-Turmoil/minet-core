@@ -79,8 +79,19 @@ void IRequestDispatcher::Dispatch(const Ref<HttpContext>& context)
          *
          * 200 does not imply there is no error. There could still be error,
          * but the error is handled by the handler itself.
+         *
+         * The handler may throw exception. In this case, the server will
+         * simply give a 500 Internal Server Error.
          */
-        statusCode = _InvokeHandler(handler, context);
+        try
+        {
+            statusCode = _InvokeHandler(handler, context);
+        }
+        catch (const std::exception& e)
+        {
+            _logger->Error("Exception occurred when handling request {}: {}", path, e.what());
+            statusCode = http::status::INTERNAL_SERVER_ERROR;
+        }
     }
     else
     {
@@ -94,11 +105,14 @@ void IRequestDispatcher::Dispatch(const Ref<HttpContext>& context)
         handler = _GetErrorHandler(statusCode);
         if (handler)
         {
+            /**
+             * Error handler should NOT throw any exception.
+             */
             _InvokeHandler(handler, context);
         }
         else
         {
-            _logger->Warn("No error handler for status code {}", statusCode);
+            _logger->Warn("No error handler for {} {}", statusCode, http::StatusCodeToDescription(statusCode));
         }
     }
 
