@@ -84,12 +84,13 @@ void IRequestDispatcher::Dispatch(const Ref<HttpContext>& context)
     }
     else
     {
-        _logger->Warn("No handler found for path '{}'", path);
+        _logger->Warn("No handler found for '{} {}'", http::HttpMethodToString(context->Request.Method), path);
     }
 
     if (statusCode != http::status::OK)
     {
-        _logger->Error("Error handling request {}: {} {}", path, statusCode, http::StatusCodeToDescription(statusCode));
+        _logger->Debug("Error occurred when handling request {}: {} {}", path, statusCode,
+                       http::StatusCodeToDescription(statusCode));
         handler = _GetErrorHandler(statusCode);
         if (handler)
         {
@@ -102,7 +103,7 @@ void IRequestDispatcher::Dispatch(const Ref<HttpContext>& context)
     }
 
     DestroyHttpContext(context);
-    _logger->Debug("Request {} handled", path);
+    _logger->Debug("Request '{}' handled", path);
 }
 
 void IRequestDispatcher::SetLogger(const Ref<Logger>& logger)

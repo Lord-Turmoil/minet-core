@@ -43,8 +43,6 @@ function send_requests() {
             curl -s -X POST -H "Content-Type: text/plain" -d "$text" $BASE_URL/echo
         fi
         echo ""
-        # rand=$(( RANDOM % 3 ))  # sleep 0-3 seconds
-        # sleep $rand
     done
 }
 

@@ -43,6 +43,8 @@ const char* StatusCodeToDescription(int statusCode)
         return "Bad Request";
     case NOT_FOUND:
         return "Not Found";
+    case METHOD_NOT_ALLOWED:
+        return "Method Not Allowed";
     case INTERNAL_SERVER_ERROR:
         return "Internal Server Error";
     default:

@@ -8,6 +8,8 @@
 #include "components/MayhemServer.h"
 #include "components/RequestDispatcher.h"
 
+#include "impl/DefaultHandlers.h"
+
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
@@ -190,6 +192,9 @@ void WebHostBuilder::_InitializeComponents()
 
     auto dispatcher = _container->Resolve<IRequestDispatcher>();
     dispatcher->SetLogger(GetLogger("RequestDispatcher"));
+
+    // Register default handlers.
+    impl::RegisterDefaultHandlers(shared_from_this());
 }
 
 void WebHostBuilder::_Preamble() const
