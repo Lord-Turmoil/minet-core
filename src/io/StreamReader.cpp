@@ -22,29 +22,38 @@ BufferedStreamReader::~BufferedStreamReader()
 int BufferedStreamReader::Read()
 {
     _Flush();
-    return IsEof() ? -1 : *_head++;
+
+    if (IsEof())
+    {
+        return StreamStatus::EndOfFile;
+    }
+
+    if (_IsEmpty())
+    {
+        return StreamStatus::Empty;
+    }
+
+    return *_head++;
 }
 
 ssize_t BufferedStreamReader::Read(char* buffer, size_t length)
 {
     if (IsEof())
     {
-        return -1;
+        return StreamStatus::EndOfFile;
     }
 
     size_t remaining = length;
     while (remaining > 0 && !IsEof())
     {
-        if (_IsEmpty())
-        {
-            _Flush();
-            if (IsEof())
-            {
-                break;
-            }
-        }
+        _Flush();
 
         size_t size = std::min(length, _BufferSize());
+        if (size == 0)
+        {
+            break;
+        }
+
         std::memcpy(buffer, _head, size);
         _head += size;
         buffer += size;
@@ -67,16 +76,19 @@ void BufferedStreamReader::_Flush()
 
     _head = _buffer;
     ssize_t size = _stream->Read(_buffer, _sBufferSize);
-    if (size < 0)
-    {
-        // TODO: Handle error.
-        _tail = _head;
-        _eof = true;
-    }
-    else
+    if (size >= 0)
     {
         _tail = _head + size;
         _eof = (size == 0);
+    }
+    else if (size == StreamStatus::Again)
+    {
+        // Do nothing, wait for next read.
+    }
+    else
+    {
+        // Error!
+        _eof = true;
     }
 }
 

@@ -2,10 +2,18 @@
 
 #include "utils/Network.h"
 
+#include <errno.h>
+
 MINET_BEGIN
 
 namespace io
 {
+
+/*
+ * ===================================================================
+ * ------------------------- Socket Stream ---------------------------
+ * ===================================================================
+ */
 
 SocketStream::SocketStream(int fd) : _fd(fd)
 {
@@ -25,22 +33,42 @@ bool SocketStream::IsWritable() const
 
 ssize_t SocketStream::Read(char* buffer, size_t length)
 {
-    if (!IsReadable())
+   if (!IsReadable())
     {
-        return -1;
+        return StreamStatus::Error;
     }
 
-    return network::ReadSocket(_fd, buffer, length);
+    ssize_t read = network::ReadSocket(_fd, buffer, length);
+    if (read == -1)
+    {
+        if (errno == EAGAIN || errno == EWOULDBLOCK)
+        {
+            return StreamStatus::Again;
+        }
+        return StreamStatus::Error;
+    }
+
+    return read;
 }
 
 ssize_t SocketStream::Write(const char* buffer, size_t length)
 {
     if (!IsWritable())
     {
-        return -1;
+        return StreamStatus::Error;
     }
 
-    return network::WriteSocket(_fd, buffer, length);
+    ssize_t written = network::WriteSocket(_fd, buffer, length);
+    if (written == -1)
+    {
+        if (errno == EAGAIN || errno == EWOULDBLOCK)
+        {
+            return StreamStatus::Again;
+        }
+        return StreamStatus::Error;
+    }
+
+    return written;
 }
 
 int SocketStream::Close()
@@ -54,6 +82,12 @@ int SocketStream::Close()
     return 0;
 }
 
+/*
+ * ===================================================================
+ * --------------------- Buffer Input Stream -------------------------
+ * ===================================================================
+ */
+
 BufferInputStream::BufferInputStream(const char* buffer, size_t length)
     : _buffer(buffer, buffer + length), _offset(0), _closed(false)
 {
@@ -63,12 +97,12 @@ ssize_t BufferInputStream::Read(char* buffer, size_t length)
 {
     if (!IsReadable())
     {
-        return -1;
+        return StreamStatus::Error;
     }
 
     if (_offset >= _buffer.size())
     {
-        return -1;
+        return StreamStatus::Error;
     }
 
     size_t size = std::min(length, _buffer.size() - _offset);
@@ -79,7 +113,7 @@ ssize_t BufferInputStream::Read(char* buffer, size_t length)
 
 ssize_t BufferInputStream::Write(const char* buffer, size_t length)
 {
-    return -1;
+    return StreamStatus::Error;
 }
 
 int BufferInputStream::Close()

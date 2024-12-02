@@ -15,6 +15,22 @@ namespace io
 {
 
 /**
+ * @brief Return value for read/write operations.
+ */
+namespace StreamStatus
+{
+
+enum
+{
+    Empty = 0,
+    EndOfFile = -1,
+    Again = -2,
+    Error = -3
+};
+
+} // namespace StreamStatus
+
+/**
  * @brief Interface for stream.
  * @note Stream doesn't follow RAII, so it require manual close.
  * @note It guarantees that double close is OK.
@@ -54,7 +70,7 @@ public:
  * @brief Socket stream.
  * @warning It does not own the file descriptor, so it won't release it.
  */
-class SocketStream final : public Stream
+class SocketStream : public Stream
 {
 public:
     SocketStream(int fd);
@@ -68,7 +84,7 @@ public:
 
     int Close() override;
 
-private:
+protected:
     int _fd;
 };
 

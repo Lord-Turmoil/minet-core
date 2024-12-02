@@ -1,5 +1,7 @@
 #include "io/StreamWriter.h"
 
+#include "minet/common/Assert.h"
+
 #include <cstring>
 
 MINET_BEGIN
@@ -69,9 +71,17 @@ ssize_t BufferedStreamWriter::Flush()
     }
 
     ssize_t r = _stream->Write(_buffer, _BufferSize());
-    _tail = _buffer;
+    if (r >= 0)
+    {
+        MINET_ASSERT(r == static_cast<ssize_t>(_BufferSize()));
+        _tail = _buffer;
+    }
+    else if (r == StreamStatus::Again)
+    {
+        return StreamStatus::Again;
+    }
 
-    return r;
+    return StreamStatus::Error;
 }
 
 } // namespace io
