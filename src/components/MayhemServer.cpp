@@ -10,9 +10,17 @@
 
 MINET_BEGIN
 
+const int MayhemServer::MAX_FD = 1024;
+
 MayhemServer::MayhemServer(const Ref<ServerConfig>& config)
-    : _config(config), _threadPool(config->Threads, config->Capacity), _listenFd(0), _epollFd(0), _isRunning(false)
+    : _config(config), _threadPool(config->Threads, config->Capacity),
+      _handles(new Ref<AsyncHttpContextBuilder>[MAX_FD]), _listenFd(0), _epollFd(0), _isRunning(false)
 {
+}
+
+MayhemServer::~MayhemServer()
+{
+    delete[] _handles;
 }
 
 Ref<threading::Task> MayhemServer::StartAsync()
@@ -97,49 +105,40 @@ void MayhemServer::_Serve()
                 // There may be multiple incoming connections.
                 while (AcceptSocket(_listenFd, &data))
                 {
-                    // Warning: Lonely new operator! Will be deleted right after use.
-                    sockaddr_in* addr = static_cast<sockaddr_in*>(malloc(sizeof(sockaddr_in)));
-                    memcpy(addr, &data.Address, sizeof(sockaddr_in));
-                    if (!_MonitorFd(data.SocketFd, addr))
+                    if (!_MonitorFd(data.SocketFd))
                     {
                         _logger->Error("Failed to monitor new connection");
                         network::CloseSocket(data.SocketFd);
                     }
+                    _handles[data.SocketFd] = CreateRef<AsyncHttpContextBuilder>(data);
                 }
             }
             else if (events[i].events & EPOLLIN)
             {
-#ifdef MINET_DEBUG
-                // One event should not come here twice, so we check it
-                // only in debug mode.
-                MINET_ASSERT(events[i].data.ptr);
-#endif
-                // Parse the request immediately.
-                data.SocketFd = events[i].data.fd;
-                data.Address = *static_cast<sockaddr_in*>(events->data.ptr);
+                auto& handle = _handles[events[i].data.fd];
+                MINET_ASSERT(handle);
 
-                int r = CreateHttpContext(data, &context);
-                // Warning: Remember to delete this!
-                free(events[i].data.ptr);
-#ifdef MINET_DEBUG
-                // Ensure there is no invalid pointer.
-                epoll::Modify(_epollFd, events[i].data.fd, events[i].events, nullptr);
-#endif
-                if (r != 0)
+                int r = handle->Parse();
+                if (r == 1)
                 {
+                    const Ref<HttpContext>& context = handle->GetContext();
+                    _DecorateContext(context);
+                    if (!_threadPool.Submit([this, context] { _onConnectionCallback(context); }))
+                    {
+                        _logger->Warn("Server overwhelmed, new connection refused");
+                        network::CloseSocket(data.SocketFd);
+                        _handles[events[i].data.fd].reset();
+                    }
+                }
+                else if (r < 0)
+                {
+                    // error occurred
                     _logger->Error("Failed to create HTTP context: {}", r);
                     network::CloseSocket(data.SocketFd);
+                    _handles[events[i].data.fd].reset();
                     continue;
                 }
-
-                _logger->Debug("New connection from {}", context->Request.Host);
-
-                _DecorateContext(context);
-                if (!_threadPool.Submit([this, context] { _onConnectionCallback(context); }))
-                {
-                    _logger->Warn("Server overwhelmed, new connection refused");
-                    network::CloseSocket(data.SocketFd);
-                }
+                // else, continue parsing
             }
         }
     }
@@ -219,10 +218,10 @@ void MayhemServer::_CloseEpoll()
     _epollFd = 0;
 }
 
-bool MayhemServer::_MonitorFd(int fd, void* data)
+bool MayhemServer::_MonitorFd(int fd)
 {
-    network::MakeNonBlockingSocket(fd);
-    if (epoll::Monitor(_epollFd, fd, EPOLLIN | EPOLLET, data) != 0)
+    // network::MakeNonBlockingSocket(fd);
+    if (epoll::Monitor(_epollFd, fd, EPOLLIN | EPOLLET) != 0)
     {
         _logger->Error("Failed to add fd to epoll");
         return false;

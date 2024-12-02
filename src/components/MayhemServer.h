@@ -7,6 +7,8 @@
 
 MINET_BEGIN
 
+class AsyncHttpContextBuilder;
+
 /**
  * @brief Mayhem server uses epoll and thread pool for async processing.
  * @ref man 7 epoll
@@ -16,7 +18,7 @@ class MayhemServer final : public IServer
 {
 public:
     explicit MayhemServer(const Ref<ServerConfig>& config);
-    ~MayhemServer() override = default;
+    ~MayhemServer() override;
 
     MayhemServer(const MayhemServer&) = delete;
     MayhemServer& operator=(const MayhemServer&) = delete;
@@ -49,12 +51,24 @@ private:
 
     void _OpenEpoll();
     void _CloseEpoll();
-    bool _MonitorFd(int fd, void* data);
+    bool _MonitorFd(int fd);
 
 private:
+    /**
+     * @brief The maximum number of file descriptors.
+     * @note This is the maximum concurrent requests the server can handle.
+     */
+    static const int MAX_FD;
+
     Ref<ServerConfig> _config;
 
     threading::ThreadPool _threadPool;
+
+    /**
+     * @brief One file descriptor for each connection.
+     * @note For concurrent request parsing.
+     */
+    Ref<AsyncHttpContextBuilder>* _handles;
 
     int _listenFd;
     int _epollFd;

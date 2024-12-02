@@ -4,7 +4,6 @@
 
 #include "io/Stream.h"
 #include "utils/Network.h"
-#include "utils/Parser.h"
 
 #include <sstream>
 
@@ -123,6 +122,49 @@ std::string HttpResponse::ToString() const
     }
 
     return ss.str();
+}
+
+AsyncHttpContextBuilder::AsyncHttpContextBuilder(const network::AcceptData& data)
+    : _context(CreateRef<HttpContext>()), _parser(&(_context->Request))
+{
+    Ref<io::Stream> stream = CreateRef<io::SocketStream>(data.SocketFd);
+
+    _context->Request.Host = network::AddressToHost(data.Address.sin_addr.s_addr, data.Address.sin_port);
+    _context->Request.BodyStream = stream;
+
+    _context->Response.StatusCode = 200;
+    _context->Response.BodyStream = stream;
+
+    _reader = CreateRef<io::BufferedStreamReader>(stream);
+}
+
+int AsyncHttpContextBuilder::Parse()
+{
+    int ch = _reader->Read();
+    while (ch > 0)
+    {
+        int r = _parser.Feed(ch);
+        if (r < 0)
+        {
+            return r;
+        }
+        if (r == 1)
+        {
+            return 1;
+        }
+        ch = _reader->Read();
+    }
+
+    if (ch == io::StreamStatus::EndOfFile)
+    {
+        return io::StreamStatus::EndOfFile;
+    }
+    if (ch == io::StreamStatus::Error)
+    {
+        return io::StreamStatus::Error;
+    }
+
+    return 0;
 }
 
 MINET_END

@@ -7,6 +7,8 @@
 
 #include "minet/common/Base.h"
 
+#include <string>
+
 MINET_BEGIN
 
 namespace http
@@ -48,13 +50,27 @@ enum class HttpMethod : uint8_t
     HEAD,
     OPTIONS,
     TRACE,
-    PATCH
+    PATCH,
+    INVALID
 };
 
 /**
  * @brief Get corresponding string representation of HTTP method.
  */
 const char* HttpMethodToString(HttpMethod method);
+
+/**
+ * @brief Get corresponding HTTP method from string.
+ */
+HttpMethod HttpMethodFromString(const std::string& method);
+
+enum class HttpVersion : uint8_t
+{
+    HTTP_1_0,
+    HTTP_1_1,   // Currently only support HTTP/1.1
+    HTTP_2_0,
+    INVALID
+};
 
 /**
  * @brief Get corresponding description of HTTP status codes.

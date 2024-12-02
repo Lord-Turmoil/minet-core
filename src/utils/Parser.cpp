@@ -1,4 +1,4 @@
-#include "utils/Parser.h"
+#include "minet/utils/Parser.h"
 
 #include "minet/common/Assert.h"
 #include "minet/common/Http.h"
@@ -307,6 +307,7 @@ RequestParser::ParseStatus RequestParser::_ParseStartLine()
         // Currently only support version 1.1
         return ParseStatus::Error;
     }
+    _request->Version = HttpVersion::HTTP_1_1;
 
     // NewLine
     _NextToken();

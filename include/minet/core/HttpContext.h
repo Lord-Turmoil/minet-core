@@ -7,6 +7,10 @@
 
 #include "minet/common/Http.h"
 
+#include "minet/utils/Parser.h"
+
+#include "io/StreamReader.h"
+
 #include <string>
 #include <unordered_map>
 
@@ -29,6 +33,7 @@ using HeaderCollection = std::unordered_map<std::string, std::string>;
 struct HttpRequest
 {
     http::HttpMethod Method;
+    http::HttpVersion Version;
 
     /**
      * @brief The content length.
@@ -141,5 +146,38 @@ int CreateHttpContext(int fd, Ref<HttpContext>* context);
  * @return 0 on success, otherwise non-zero.
  */
 int DestroyHttpContext(const Ref<HttpContext>& context);
+
+/**
+ * @brief Asynchronously parse HTTP context.
+ */
+class AsyncHttpContextBuilder
+{
+public:
+    AsyncHttpContextBuilder(const network::AcceptData& data);
+
+    /**
+     * @brief Parse the HTTP context.
+     * @note This may only be able to parse part of the request.
+     * @return
+     *      1: Parse completed, call GetContext to get the result.
+     *      0: Parse not completed, call again.
+     *    < 0: Error occurred.
+     */
+    int Parse();
+
+    /**
+     * @brief Get the parsed HTTP context.
+     * @return The parsed HTTP context.
+     */
+    const Ref<HttpContext>& GetContext()
+    {
+        return _context;
+    }
+
+private:
+    Ref<HttpContext> _context;
+    Ref<io::StreamReader> _reader;
+    http::AsyncHttpRequestParser _parser;
+};
 
 MINET_END

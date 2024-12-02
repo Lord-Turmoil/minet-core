@@ -1,7 +1,8 @@
 #include <minet/minet.h>
 
+#include "minet/utils/Parser.h"
+
 #include "io/Stream.h"
-#include "utils/Parser.h"
 
 #include "doctest.h"
 

@@ -4,9 +4,9 @@
 #include "minet/common/Http.h"
 #include "minet/components/Logger.h"
 #include "minet/core/IRequestHandler.h"
+#include "minet/utils/Parser.h"
 
 #include "components/LoggerFactory.h"
-#include "utils/Parser.h"
 
 MINET_BEGIN
 

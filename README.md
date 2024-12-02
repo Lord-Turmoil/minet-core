@@ -15,6 +15,31 @@
 > [!IMPORTANT]
 > Currently, this library only targets Linux platforms. It is not the library you are looking for if you want cross-platform support.
 
+## Features
+
+Although **minet core** is simple, it indeed has some cool features.😎
+
+- **Easy to Use**: It is super easy to create a server with just a few lines of code.
+- **Flexible Configuration**: You can configure the server with a JSON file.
+- **Dependency Injection**: It uses IoC to manage components, and you can replace them with your own.
+- **Multiple Servers**: It provides multiple server implementations, good for study and comparison.
+- **Extensible**: It is designed to be extensible, and you can build your framework on top of it.
+
+## Purpose
+
+The main purpose for **minet core** is to learn the mechanism behind an HTTP server. The key is to understand how the server accepts and handles requests, and how it sends responses back. It is also a good practice to learn how to design a library that is easy to use and flexible to extend.
+
+## Key Points
+
+The most important part of **minet core** is the design of the server. The server is responsible for accepting requests. As my knowledge expands, I have implemented three different servers.
+
+The first is `Basic` server, accepting requests in one thread. It is simple and easy to understand, but it is not efficient.
+
+The second is `Threaded` server, which handles requests in multiple threads with a thread pool.
+It is way more efficient than the `Basic` server, but it is not the best.
+
+The third is `Mayhem` server, based on `Threaded` server, but also utilizes epoll for asynchronous I/O. It is the most efficient server in **minet core**.
+
 ---
 
 # Getting Started
@@ -45,6 +70,29 @@ If you want to update the submodules, you can run the following command, or `./s
 
 ```bash
 git submodule update --recursive
+```
+
+## Build the Library
+
+> [!INFO]
+> By default, the sanitizer options are commented out in `CMakeLists.txt`, as they are not compatible with debugger. If you want to use them, uncomment the corresponding lines.
+
+### Have a Try
+
+Before you decide to use **minet-core** in your project, you can build the demo server to see how it works. The following commands will build libray and the demo server. You can also jump to the following section to see the bundled demo.
+
+```bash
+./script/build.sh debug   # build the debug version
+./script/build.sh release # build the release version
+```
+
+### Use it in Your Project
+
+To use **minet core** in your project, simply add it as a subdirectory in your CMake project. Then link your target with `minetcore`.
+
+```cmake
+add_subdirectory("minet-core")
+target_link_libraries(your-app-name PRIVATE minetcore)
 ```
 
 ## Your First Server
@@ -86,6 +134,7 @@ The example above might be a little too simple. For a more comprehensive demonst
 # in another terminal
 ./script/demo.sh client        # 4 processes, each sending 10 requests
 ./script/demo.sh client N      # 4 processes, each sending N requests
+./script/demo.sh client N M    # 2^M processes, each sending N requests
 ```
 
 Basic server handles requests in one thread, so you'll see the client return one response at a time. Mayhem server handles requests asynchronously, so you'll see a significant speedup in the client.

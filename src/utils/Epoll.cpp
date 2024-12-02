@@ -30,9 +30,10 @@ int Monitor(int epfd, int fd, uint32_t events)
 int Monitor(int epfd, int fd, uint32_t events, void* data)
 {
     epoll_event event;
+
     event.events = events;
     event.data.ptr = data;
-    event.data.fd = fd;
+
     return epoll_ctl(epfd, EPOLL_CTL_ADD, fd, &event);
 }
 
@@ -41,7 +42,6 @@ int Modify(int epfd, int fd, uint32_t events, void* data)
     epoll_event event;
     event.events = events;
     event.data.ptr = data;
-    event.data.fd = fd;
     return epoll_ctl(epfd, EPOLL_CTL_MOD, fd, &event);
 }
 

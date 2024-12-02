@@ -25,9 +25,49 @@ const char* HttpMethodToString(HttpMethod method)
         return "TRACE";
     case HttpMethod::PATCH:
         return "PATCH";
+    case HttpMethod::INVALID:
+        return "INVALID";
     }
 
     return "UNKNOWN";
+}
+
+HttpMethod HttpMethodFromString(const std::string& method)
+{
+    if (method == "GET")
+    {
+        return HttpMethod::GET;
+    }
+    if (method == "POST")
+    {
+        return HttpMethod::POST;
+    }
+    if (method == "PUT")
+    {
+        return HttpMethod::PUT;
+    }
+    if (method == "DELETE")
+    {
+        return HttpMethod::DELETE;
+    }
+    if (method == "HEAD")
+    {
+        return HttpMethod::HEAD;
+    }
+    if (method == "OPTIONS")
+    {
+        return HttpMethod::OPTIONS;
+    }
+    if (method == "TRACE")
+    {
+        return HttpMethod::TRACE;
+    }
+    if (method == "PATCH")
+    {
+        return HttpMethod::PATCH;
+    }
+
+    return HttpMethod::INVALID;
 }
 
 const char* StatusCodeToDescription(int statusCode)

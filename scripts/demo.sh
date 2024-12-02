@@ -66,14 +66,15 @@ function run_client() {
             send_requests $ROUND
         fi
     else
-        ROUND=${1:-10}
+        M_ROUND=${1:-10}
+        M_LEVEL=${2:-2}
         start=`date +%s`
         
-        bash $0 client _ 2 $ROUND
+        bash $0 client _ $M_LEVEL $M_ROUND
         wait $!
         
         end=`date +%s`
-        echo "Sent $((ROUND*4)) ($ROUND * 4) requests in $((end-start)) seconds"
+        echo "Sent $((M_ROUND*(2**M_LEVEL))) ($M_ROUND * $((2**$M_LEVEL))) requests in $((end-start)) seconds"
     fi
 }
 
