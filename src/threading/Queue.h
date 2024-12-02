@@ -20,7 +20,9 @@ namespace threading
 {
 
 // It is better to align critical data to avoid false sharing.
-#if defined(__cpp_lib_hardware_interference_size)
+// Some compiler may throw error for std::hardware_destructive_interference_size,
+// so we use 64 as the default value.
+#if defined(__cpp_lib_hardware_interference_size) && 0
 static constexpr size_t HARDWARE_INTERFERENCE_SIZE = std::hardware_destructive_interference_size;
 #else
 static constexpr size_t HARDWARE_INTERFERENCE_SIZE = 64;

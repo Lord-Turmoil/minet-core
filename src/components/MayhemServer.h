@@ -52,6 +52,7 @@ private:
     void _OpenEpoll();
     void _CloseEpoll();
     bool _MonitorFd(int fd);
+    bool _UnmonitorFd(int fd);
 
 private:
     /**

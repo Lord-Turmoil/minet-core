@@ -42,6 +42,14 @@ int Monitor(int epfd, int fd, uint32_t events);
 int Monitor(int epfd, int fd, uint32_t events, void* data);
 
 /**
+ * @brief Remove a monitored fd from epoll.
+ * @param epfd Epoll fd.
+ * @param fd The fd to unmonitor.
+ * @return 0 on success, -1 on failure.
+ */
+int Unmonitor(int epfd, int fd);
+
+/**
  * @brief Modify a monitored epoll event.
  * @param epfd Epoll fd.
  * @param fd The fd.

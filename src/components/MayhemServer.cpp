@@ -105,37 +105,49 @@ void MayhemServer::_Serve()
                 // There may be multiple incoming connections.
                 while (AcceptSocket(_listenFd, &data))
                 {
+                    if (data.SocketFd >= MAX_FD)
+                    {
+                        _logger->Error("Unable to handle more connections");
+                        network::CloseSocket(data.SocketFd);
+                        break;
+                    }
+
                     if (!_MonitorFd(data.SocketFd))
                     {
                         _logger->Error("Failed to monitor new connection");
                         network::CloseSocket(data.SocketFd);
                     }
+
                     _handles[data.SocketFd] = CreateRef<AsyncHttpContextBuilder>(data);
                 }
             }
             else if (events[i].events & EPOLLIN)
             {
-                auto& handle = _handles[events[i].data.fd];
+                int fd = events[i].data.fd;
+
+                auto& handle = _handles[fd];
                 MINET_ASSERT(handle);
 
                 int r = handle->Parse();
                 if (r == 1)
                 {
+                    _UnmonitorFd(fd); // prevent from triggering again
+
                     const Ref<HttpContext>& context = handle->GetContext();
                     _DecorateContext(context);
                     if (!_threadPool.Submit([this, context] { _onConnectionCallback(context); }))
                     {
                         _logger->Warn("Server overwhelmed, new connection refused");
-                        network::CloseSocket(data.SocketFd);
-                        _handles[events[i].data.fd].reset();
+                        network::CloseSocket(fd);
+                        _handles[fd].reset();
                     }
                 }
                 else if (r < 0)
                 {
                     // error occurred
                     _logger->Error("Failed to create HTTP context: {}", r);
-                    network::CloseSocket(data.SocketFd);
-                    _handles[events[i].data.fd].reset();
+                    network::CloseSocket(fd);
+                    _handles[fd].reset();
                     continue;
                 }
                 // else, continue parsing
@@ -226,7 +238,16 @@ bool MayhemServer::_MonitorFd(int fd)
         _logger->Error("Failed to add fd to epoll");
         return false;
     }
-    _logger->Debug("New connection {} monitored", fd);
+    return true;
+}
+
+bool MayhemServer::_UnmonitorFd(int fd)
+{
+    if (epoll::Unmonitor(_epollFd, fd) != 0)
+    {
+        _logger->Error("Failed to remove fd from epoll");
+        return false;
+    }
     return true;
 }
 
