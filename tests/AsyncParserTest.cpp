@@ -2,7 +2,7 @@
 
 #include "minet/utils/Parser.h"
 
-#include "io/Stream.h"
+#include "io/StreamReader.h"
 
 #include "doctest.h"
 

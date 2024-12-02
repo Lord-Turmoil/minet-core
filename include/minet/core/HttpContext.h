@@ -9,8 +9,6 @@
 
 #include "minet/utils/Parser.h"
 
-#include "io/StreamReader.h"
-
 #include <string>
 #include <unordered_map>
 
@@ -19,6 +17,7 @@ MINET_BEGIN
 namespace io
 {
 class Stream;
+class StreamReader;
 }
 
 namespace network

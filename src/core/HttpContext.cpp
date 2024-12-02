@@ -3,6 +3,7 @@
 #include "minet/common/Http.h"
 
 #include "io/Stream.h"
+#include "io/StreamReader.h"
 #include "utils/Network.h"
 
 #include <sstream>
