@@ -2,6 +2,6 @@
 
 MINET_BEGIN
 
-const char* Version = "0.1.0";
+const char* Version = "1.0.2";
 
 MINET_END

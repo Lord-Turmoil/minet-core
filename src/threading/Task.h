@@ -47,6 +47,7 @@ public:
 private:
     std::packaged_task<void()> _task;
     std::future<void> _future;
+    std::thread _thread;
 };
 
 /**
@@ -79,6 +80,7 @@ public:
 private:
     std::packaged_task<TResult()> _task;
     std::future<TResult> _future;
+    std::thread _thread;
 };
 
 /*
@@ -116,8 +118,12 @@ inline Ref<Task> Task::Completed()
 
 inline Ref<Task> Task::StartAsync()
 {
+    if (_future.valid())
+    {
+        throw std::runtime_error("Task already started");
+    }
     _future = _task.get_future();
-    _task();
+    _thread = std::thread(std::move(_task));
     return shared_from_this();
 }
 
@@ -127,6 +133,7 @@ inline void Task::Await()
     {
         throw std::runtime_error("Task not started");
     }
+    _thread.join();
     _future.get();
 }
 
@@ -175,8 +182,12 @@ template <typename TResult> Ref<ValueTask<TResult>> ValueTask<TResult>::Complete
 
 template <typename TResult> Ref<ValueTask<TResult>> ValueTask<TResult>::StartAsync()
 {
+    if (_future.valid())
+    {
+        throw std::runtime_error("Task already started");
+    }
     _future = _task.get_future();
-    _task();
+    _thread = std::thread(std::move(_task));
     return this->shared_from_this();
 }
 
@@ -186,6 +197,7 @@ template <typename TResult> TResult ValueTask<TResult>::Await()
     {
         throw std::runtime_error("Task not started");
     }
+    _thread.join();
     return _future.get();
 }
 

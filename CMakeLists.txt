@@ -6,7 +6,7 @@ set(BINARY_NAME minetcore)
 set(CMAKE_CXX_STANDARD 17)
 
 project(${PROJECT_NAME}
-    VERSION 1.0.1
+    VERSION 1.0.2
     DESCRIPTION "A mini HTTP server library with C++"
     LANGUAGES CXX)
 
