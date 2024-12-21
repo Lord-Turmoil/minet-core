@@ -2,6 +2,7 @@
 
 #include "minet/common/Assert.h"
 #include "minet/core/WebHost.h"
+#include "minet/version.h"
 
 #include "components/LoggerFactory.h"
 #include "components/RequestDispatcher.h"
@@ -235,15 +236,17 @@ void _PrintBanner()
    A C++ HTTP server library mimicking ASP.NET Core   )";
     static const int WIDTH = 54;
 
-    std::cout << HEADER << '\n';
-    int versionWidth = static_cast<int>(strlen(Version) + 1);
+    const char* version = MINET_VERSION_STRING;
+
+        std::cout << HEADER << '\n';
+    int versionWidth = static_cast<int>(strlen(version) + 1);
     int paddingLeft = (WIDTH /* width or the header */ - versionWidth) / 2;
     int paddingRight = WIDTH - versionWidth - paddingLeft;
     for (int i = 0; i < paddingLeft; ++i)
     {
         std::cout << ' ';
     }
-    std::cout << 'v' << Version;
+    std::cout << 'v' << version;
     for (int i = 0; i < paddingRight; ++i)
     {
         std::cout << ' ';

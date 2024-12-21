@@ -383,12 +383,12 @@ int AsyncHttpRequestParser::_ParseBody(char ch)
     CONTINUE();
 }
 
-int AsyncHttpRequestParser::_ParseDone(char ch)
+int AsyncHttpRequestParser::_ParseDone(char /* ch */)
 {
     ACCEPT();
 }
 
-int AsyncHttpRequestParser::_ParseError(char ch)
+int AsyncHttpRequestParser::_ParseError(char /* ch */)
 {
     REJECT();
 }

@@ -1,4 +1,9 @@
-set(DEMO_BINARY "minet-demo")
+# ====================================================================
+# minet core demo server
+# ====================================================================
 
-add_executable(${DEMO_BINARY} demo.cpp)
-target_link_libraries(${DEMO_BINARY} minetcore)
+project(minet-demo)
+
+add_executable(${PROJECT_NAME} demo.cpp)
+
+target_link_libraries(${PROJECT_NAME} ${MINET_LIB})

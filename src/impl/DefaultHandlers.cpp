@@ -13,22 +13,22 @@ static void DefaultErrorHandler(int statusCode, TextResponse& response)
     response.Text().assign(http::StatusCodeToDescription(statusCode));
 }
 
-void BadRequestHandler(const TextRequest& request, TextResponse& response)
+void BadRequestHandler(const TextRequest& /* request */, TextResponse& response)
 {
     DefaultErrorHandler(http::status::BAD_REQUEST, response);
 }
 
-void MethodNotAllowedHandler(const TextRequest& request, TextResponse& response)
+void MethodNotAllowedHandler(const TextRequest& /* request */, TextResponse& response)
 {
     DefaultErrorHandler(http::status::METHOD_NOT_ALLOWED, response);
 }
 
-void NotFoundHandler(const TextRequest& request, TextResponse& response)
+void NotFoundHandler(const TextRequest& /* request */, TextResponse& response)
 {
     DefaultErrorHandler(http::status::NOT_FOUND, response);
 }
 
-void InternalServerErrorHandler(const TextRequest& request, TextResponse& response)
+void InternalServerErrorHandler(const TextRequest& /* request */, TextResponse& response)
 {
     DefaultErrorHandler(http::status::INTERNAL_SERVER_ERROR, response);
 }

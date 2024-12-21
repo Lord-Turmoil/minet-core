@@ -111,7 +111,7 @@ ssize_t BufferInputStream::Read(char* buffer, size_t length)
     return size;
 }
 
-ssize_t BufferInputStream::Write(const char* buffer, size_t length)
+ssize_t BufferInputStream::Write(const char* /* buffer */, size_t /* length */)
 {
     return StreamStatus::Error;
 }

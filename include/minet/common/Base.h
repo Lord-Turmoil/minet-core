@@ -15,6 +15,7 @@
 
 #define MINET_EXPAND_MACRO(x)    x
 #define MINET_STRINGIFY_MACRO(x) #x
+#define MINET_STRINGIFY(x)       MINET_STRINGIFY_MACRO(x)
 
 #define BIT(x) (1 << (x))
 
@@ -24,10 +25,6 @@
 #define MINET_DEBUG
 #else
 #define MINET_RELEASE
-#endif
-
-#if defined(MINET_DEBUG)
-#define MINET_ENABLE_ASSERT
 #endif
 
 #define MINET_TRY(expr)                                                                                                \
@@ -52,8 +49,6 @@
     } while (0)
 
 MINET_BEGIN
-
-extern const char* Version;
 
 template <typename T> using Ref = std::shared_ptr<T>;
 

@@ -1,59 +1,109 @@
-cmake_minimum_required(VERSION 3.14)
+# ====================================================================
+# Top-level CMakeLists.txt file for Mini-Net Core, a.k.a. minet-core
+# ====================================================================
 
-set(PROJECT_NAME "minet-core")
-set(BINARY_NAME minetcore)
+cmake_minimum_required(VERSION 3.16)
+
+include(cmake/utils.cmake)
+
+# --------------------------------------------------------------------
+# Project configuration
+# --------------------------------------------------------------------
+
+minet_extract_version()
+
+project(minetcore
+    VERSION ${MINET_VERSION}
+    DESCRIPTION "A mini HTTP server library with C++ mimicking ASP.NET Core"
+    LANGUAGES CXX)
+set(PROJECT_FULLNAME "minet core")
+message(STATUS "Building ${PROJECT_FULLNAME} ${MINET_VERSION}")
+
+option(MINET_ENABLE_ASSERTION "Enable assertions" ON)
+option(MINET_BUILD_DEMO "Build demo projects" ON)
+option(MINET_BUILD_TEST "Build unit tests" ON)
+
+# --------------------------------------------------------------------
+# Project options
+# --------------------------------------------------------------------
+
+if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+    set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Choose Release or Debug" FORCE)
+endif()
+
+if(NOT DEFINED MINET_MASTER_PROJECT)
+    if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
+        set(MINET_MASTER_PROJECT ON)
+        message(STATUS "${PROJECT_FULLNAME} is build as the master project")
+    else()
+        set(MINET_MASTER_PROJECT OFF)
+        message(STATUS "${PROJECT_FULLNAME} is build as a sub-project")
+    endif()
+endif()
+
+# --------------------------------------------------------------------
+# Global compiler settings
+# --------------------------------------------------------------------
 
 set(CMAKE_CXX_STANDARD 17)
 
-project(${PROJECT_NAME}
-    VERSION 1.0.2
-    DESCRIPTION "A mini HTTP server library with C++"
-    LANGUAGES CXX)
+# --------------------------------------------------------------------
+# 3rd-party dependencies
+# --------------------------------------------------------------------
 
-if(NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE Release)
-endif()
-
-# dependencies
 add_subdirectory(libs)
+message(STATUS "minet core 3rd-party dependencies: ${MINET_VENDORS}")
+foreach(vendor ${MINET_VENDORS})
+    minet_disable_warnings(${vendor})
+endforeach()
 
-if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-    add_compile_definitions(DEBUG)
-    # ASan and TSan are incompatible, so we can't use them together.
-    # And because we use std::shared_ptr, it is most likely that there is no need for ASan.
-    # However, TSan is somehow too strict, enable it only temporarily.
-    # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=thread,undefined")
-    # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address,undefined")
+# --------------------------------------------------------------------
+# minet core main target
+# --------------------------------------------------------------------
+
+set(TARGET_NAME ${PROJECT_NAME})
+
+# Source files and target
+file(GLOB_RECURSE SRC_LIST CONFIGURE_DEPENDS "${PROJECT_SOURCE_DIR}/src/*.cpp")
+add_library(${TARGET_NAME} ${SRC_LIST})
+
+if(MINET_ENABLE_ASSERTION)
+    target_compile_definitions(${TARGET_NAME} PUBLIC MINET_ENABLE_ASSERT)
+else()
+    message(WARNING "Assertion disabled for minet core")
 endif()
 
-# strict warnings
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror")
+if(MINET_MASTER_PROJECT)
+    minet_enable_warnings(${TARGET_NAME})
+endif()
 
-# optimization flags
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g")
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
-
-# library properties
-set(LIBRARY_BASE_PATH "${PROJECT_SOURCE_DIR}")
-set(PUBLIC_INCLUDE_DIRECTORIES "${LIBRARY_BASE_PATH}/include")
-set(PRIVATE_INCLUDE_DIRECTOREIS "${LIBRARY_BASE_PATH}/src")
-include_directories(${PUBLIC_INCLUDE_DIRECTORIES} ${PRIVATE_INCLUDE_DIRECTOREIS})
-file(GLOB_RECURSE SRC_LIST CONFIGURE_DEPENDS "${LIBRARY_BASE_PATH}/src/*.cpp")
-add_library(${BINARY_NAME} ${SRC_LIST})
-
-# target properties
-target_include_directories(${BINARY_NAME} PUBLIC
-    "$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include>"
-    "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>")
-target_link_libraries(${BINARY_NAME} mioc spdlog nlohmann_json)
-
-# install properties
-install (
-	TARGETS ${BINARY_NAME}
-	LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-	PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+# Target properties
+target_include_directories(
+    ${TARGET_NAME}
+    PUBLIC ${CMAKE_CURRENT_LIST_DIR}/include
+    PRIVATE ${CMAKE_CURRENT_LIST_DIR}/src
 )
+target_link_libraries(${TARGET_NAME} ${MINET_VENDORS})
 
-enable_testing()
-add_subdirectory(tests)
-add_subdirectory(demo)
+# Emit library name
+if (MINET_MASTER_PROJECT)
+    set(MINET_LIB ${TARGET_NAME})
+else()
+    set(MINET_LIB ${TARGET_NAME} PARENT_SCOPE)
+endif()
+
+# --------------------------------------------------------------------
+# Demo and tests
+# --------------------------------------------------------------------
+
+if(MINET_BUILD_DEMO)
+    add_subdirectory(demo)
+endif()
+
+if(MINET_BUILD_TEST)
+    enable_testing()
+    add_subdirectory(tests)
+else()
+    message(STATUS "Skipping ${PROJECT_FULLNAME} unit tests")
+endif()
+
