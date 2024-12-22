@@ -1,6 +1,6 @@
 # Extract version
 function(minet_extract_version)
-    file(READ "${CMAKE_CURRENT_LIST_DIR}/include/minet/version.h" file_contents)
+    file(READ "${CMAKE_CURRENT_LIST_DIR}/minet/include/minet/version.h" file_contents)
 
     string(REGEX MATCH "MINET_VERSION_MAJOR ([0-9]+)" _ "${file_contents}")
     if(NOT CMAKE_MATCH_COUNT EQUAL 1)

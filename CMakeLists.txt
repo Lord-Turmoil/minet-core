@@ -61,36 +61,8 @@ endforeach()
 # minet core main target
 # --------------------------------------------------------------------
 
-set(TARGET_NAME ${PROJECT_NAME})
-
-# Source files and target
-file(GLOB_RECURSE SRC_LIST CONFIGURE_DEPENDS "${PROJECT_SOURCE_DIR}/src/*.cpp")
-add_library(${TARGET_NAME} ${SRC_LIST})
-
-if(MINET_ENABLE_ASSERTION)
-    target_compile_definitions(${TARGET_NAME} PUBLIC MINET_ENABLE_ASSERT)
-else()
-    message(WARNING "Assertion disabled for minet core")
-endif()
-
-if(MINET_MASTER_PROJECT)
-    minet_enable_warnings(${TARGET_NAME})
-endif()
-
-# Target properties
-target_include_directories(
-    ${TARGET_NAME}
-    PUBLIC ${CMAKE_CURRENT_LIST_DIR}/include
-    PRIVATE ${CMAKE_CURRENT_LIST_DIR}/src
-)
-target_link_libraries(${TARGET_NAME} ${MINET_VENDORS})
-
-# Emit library name
-if (MINET_MASTER_PROJECT)
-    set(MINET_LIB ${TARGET_NAME})
-else()
-    set(MINET_LIB ${TARGET_NAME} PARENT_SCOPE)
-endif()
+add_subdirectory(minet)
+target_link_libraries(${MINET_LIB} ${MINET_VENDORS})
 
 # --------------------------------------------------------------------
 # Demo and tests
@@ -106,4 +78,3 @@ if(MINET_BUILD_TEST)
 else()
     message(STATUS "Skipping ${PROJECT_FULLNAME} unit tests")
 endif()
-
