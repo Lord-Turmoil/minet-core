@@ -2,12 +2,16 @@
 # Dependencies of minet core
 # ====================================================================
 
-set(VENDOR_DIRS json mioc spdlog)
-
-foreach(vendor ${VENDOR_DIRS})
+set(vendors json mioc spdlog)
+foreach(vendor ${vendors})
     add_subdirectory(${vendor})
 endforeach()
 
-set(VENDORS nlohmann_json mioc spdlog)
+# json has different target name
+set(vendors nlohmann_json mioc spdlog)
+foreach(vendor ${vendors})
+    minet_disable_warnings(${vendor})
+endforeach()
 
-set(MINET_VENDORS ${VENDORS} PARENT_SCOPE)
+# emit vendors
+set(MINET_VENDORS ${vendors} PARENT_SCOPE)

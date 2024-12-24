@@ -23,6 +23,10 @@ option(MINET_ENABLE_ASSERTION "Enable assertions" ON)
 option(MINET_BUILD_DEMO "Build demo projects" ON)
 option(MINET_BUILD_TEST "Build unit tests" ON)
 
+# Sanitizers, TSan will be ignored if ASan is enabled.
+option(MINET_ASAN "Enable AddressSanitizer" OFF)
+option(MINET_TSAN "Enable ThreadSanitizer" OFF)
+
 # --------------------------------------------------------------------
 # Project options
 # --------------------------------------------------------------------
@@ -34,10 +38,10 @@ endif()
 if(NOT DEFINED MINET_MASTER_PROJECT)
     if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
         set(MINET_MASTER_PROJECT ON)
-        message(STATUS "${PROJECT_FULLNAME} is build as the master project")
+        message(STATUS "${PROJECT_FULLNAME} is built as the master project")
     else()
         set(MINET_MASTER_PROJECT OFF)
-        message(STATUS "${PROJECT_FULLNAME} is build as a sub-project")
+        message(STATUS "${PROJECT_FULLNAME} is built as a sub-project")
     endif()
 endif()
 
@@ -52,10 +56,7 @@ set(CMAKE_CXX_STANDARD 17)
 # --------------------------------------------------------------------
 
 add_subdirectory(libs)
-message(STATUS "minet core 3rd-party dependencies: ${MINET_VENDORS}")
-foreach(vendor ${MINET_VENDORS})
-    minet_disable_warnings(${vendor})
-endforeach()
+message(STATUS "${PROJECT_FULLNAME} dependencies: ${MINET_VENDORS}")
 
 # --------------------------------------------------------------------
 # minet core main target
