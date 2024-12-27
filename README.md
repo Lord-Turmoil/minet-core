@@ -74,10 +74,10 @@ git submodule update --recursive
 
 ## Build the Library
 
-> [!INFO]
-> By default, the sanitizer options are commented out in `CMakeLists.txt`, as they are not compatible with debugger. If you want to use them, uncomment the corresponding lines.
+> [!NOTE]
+> By default, the sanitizer options are OFF. You can enable address sanitizer or thread sanitizer by enabling `MINET_ASAN` or `MINET_TSAN` option respectively. Since these two sanitizers are not compatible with each other, TSan will be ignored if ASan is enabled.
 
-### Have a Try
+### Have a try
 
 Before you decide to use **minet-core** in your project, you can build the demo server to see how it works. The following commands will build libray and the demo server. You can also jump to the following section to see the bundled demo.
 
@@ -86,7 +86,7 @@ Before you decide to use **minet-core** in your project, you can build the demo 
 ./script/build.sh release # build the release version
 ```
 
-### Use it in Your Project
+### Use it in your project
 
 To use **minet core** in your project, simply add it as a subdirectory in your CMake project. Then link your target with `minetcore`.
 
@@ -119,8 +119,7 @@ int main()
 ```
 
 > [!CAUTION]
->
-> For now, there is a known issue in this calling chain. You have to call `UseAppSettings()` (with or without parameter) before you call any other functions. It loads settings and initializes necessary components.😢
+>For now, there is a known issue in this calling chain. You have to call `UseAppSettings()` (with or without parameter) before you call any other functions. It loads settings and initializes necessary components.😢
 
 ## The Demo
 
@@ -142,8 +141,7 @@ Basic server handles requests in one thread, so you'll see the client return one
 The configuration files are also provided in `demo/`, you can modify them to see the effects.
 
 > [!TIP]
->
-> By default, the server launch at `http://localhost:5000`, so make sure this port isn't blocked or occupied. And the demo client uses `curl` to send requests.
+>By default, the server launch at `http://localhost:5000`, so make sure this port isn't blocked or occupied. And the demo client uses `curl` to send requests.
 
 ---
 
@@ -282,8 +280,7 @@ If you want to add custom components, or replace the built-in ones, you can then
 # Considerations
 
 > [!NOTE]
->
-> This section contains some personal design preferences.
+>This section contains some personal design preferences.
 
 ## Heap vs Stack
 
@@ -297,4 +294,4 @@ You may notice that, in **minet-core**, some classes have private constructors, 
 
 - [nlohmann/json](https://github.com/nlohmann/json) v3.11.3
 - [gabime/spdlog](https://github.com/gabime/spdlog) v1.15.0
-- [Lord-Turmoil/MinIoC](https://github.com/Lord-Turmoil/MinIoC) v1.2.2
+- [Lord-Turmoil/MinIoC](https://github.com/Lord-Turmoil/MinIoC) v1.3.0
