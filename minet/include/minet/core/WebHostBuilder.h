@@ -50,6 +50,9 @@ public:
 
     Ref<WebHostBuilder> Get(const std::string& path, const Ref<IRequestHandler>& handler);
     Ref<WebHostBuilder> Post(const std::string& path, const Ref<IRequestHandler>& handler);
+    Ref<WebHostBuilder> Put(const std::string& path, const Ref<IRequestHandler>& handler);
+    Ref<WebHostBuilder> Delete(const std::string& path, const Ref<IRequestHandler>& handler);
+
     Ref<WebHostBuilder> Error(int statusCode, const Ref<IRequestHandler>& handler);
 
     /**

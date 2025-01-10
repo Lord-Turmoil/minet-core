@@ -67,7 +67,7 @@ HttpMethod HttpMethodFromString(const std::string& method);
 enum class HttpVersion : uint8_t
 {
     HTTP_1_0,
-    HTTP_1_1,   // Currently only support HTTP/1.1
+    HTTP_1_1, // Currently only support HTTP/1.1
     HTTP_2_0,
     INVALID
 };

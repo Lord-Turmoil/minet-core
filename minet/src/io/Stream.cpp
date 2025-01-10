@@ -33,7 +33,7 @@ bool SocketStream::IsWritable() const
 
 ssize_t SocketStream::Read(char* buffer, size_t length)
 {
-   if (!IsReadable())
+    if (!IsReadable())
     {
         return StreamStatus::Error;
     }

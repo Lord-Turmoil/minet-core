@@ -64,6 +64,16 @@ Ref<WebHostBuilder> WebHostBuilder::Post(const std::string& path, const Ref<IReq
     return _RegisterHandler(path, http::HttpMethod::POST, handler);
 }
 
+Ref<WebHostBuilder> WebHostBuilder::Put(const std::string& path, const Ref<IRequestHandler>& handler)
+{
+    return _RegisterHandler(path, http::HttpMethod::PUT, handler);
+}
+
+Ref<WebHostBuilder> WebHostBuilder::Delete(const std::string& path, const Ref<IRequestHandler>& handler)
+{
+    return _RegisterHandler(path, http::HttpMethod::DELETE, handler);
+}
+
 Ref<WebHostBuilder> WebHostBuilder::Error(int statusCode, const Ref<IRequestHandler>& handler)
 {
     return _RegisterErrorHandler(statusCode, handler);
@@ -238,7 +248,7 @@ void _PrintBanner()
 
     const char* version = MINET_VERSION_STRING;
 
-        std::cout << HEADER << '\n';
+    std::cout << HEADER << '\n';
     int versionWidth = static_cast<int>(strlen(version) + 1);
     int paddingLeft = (WIDTH /* width or the header */ - versionWidth) / 2;
     int paddingRight = WIDTH - versionWidth - paddingLeft;

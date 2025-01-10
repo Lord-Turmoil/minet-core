@@ -18,7 +18,7 @@ namespace io
 {
 class Stream;
 class StreamReader;
-}
+} // namespace io
 
 namespace network
 {
