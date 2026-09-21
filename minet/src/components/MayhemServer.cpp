@@ -232,7 +232,7 @@ void MayhemServer::_CloseEpoll()
 
 bool MayhemServer::_MonitorFd(int fd)
 {
-    // network::MakeNonBlockingSocket(fd);
+    network::MakeNonBlockingSocket(fd);
     if (epoll::Monitor(_epollFd, fd, EPOLLIN | EPOLLET) != 0)
     {
         _logger->Error("Failed to add fd to epoll");

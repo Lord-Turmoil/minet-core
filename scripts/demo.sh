@@ -3,7 +3,7 @@
 # This script is used to run the minet demo.
 
 function run_server() {
-    PROFILE=debug
+    PROFILE=release
     # Build the project
     echo -e "\033[0;33mBuilding project...\033[0m"
     ./scripts/build.sh $PROFILE >/dev/null
